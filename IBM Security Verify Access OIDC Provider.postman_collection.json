@@ -99,12 +99,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://{{OPHost}}:{{OPPort}}/oauth2/jwks",
+					"raw": "https://{{OPHost}}:{{OPPort}}{{junction}}/oauth2/jwks",
 					"protocol": "https",
 					"host": [
 						"{{OPHost}}"
 					],
-					"port": "{{OPPort}}",
+					"port": "{{OPPort}}{{junction}}",
 					"path": [
 						"oauth2",
 						"jwks"
@@ -134,12 +134,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://{{OPHost}}:{{OPPort}}/oauth2/.well-known/openid-configuration",
+					"raw": "https://{{OPHost}}:{{OPPort}}{{junction}}/oauth2/.well-known/openid-configuration",
 					"protocol": "https",
 					"host": [
 						"{{OPHost}}"
 					],
-					"port": "{{OPPort}}",
+					"port": "{{OPPort}}{{junction}}",
 					"path": [
 						"oauth2",
 						".well-known",
@@ -201,12 +201,12 @@
 					]
 				},
 				"url": {
-					"raw": "https://{{OPHost}}:{{OPPort}}/oauth2/token",
+					"raw": "https://{{OPHost}}:{{OPPort}}{{junction}}/oauth2/token",
 					"protocol": "https",
 					"host": [
 						"{{OPHost}}"
 					],
-					"port": "{{OPPort}}",
+					"port": "{{OPPort}}{{junction}}",
 					"path": [
 						"oauth2",
 						"token"
@@ -251,12 +251,12 @@
 					]
 				},
 				"url": {
-					"raw": "https://{{OPHost}}:{{OPPort}}/oauth2/introspect",
+					"raw": "https://{{OPHost}}:{{OPPort}}{{junction}}/oauth2/introspect",
 					"protocol": "https",
 					"host": [
 						"{{OPHost}}"
 					],
-					"port": "{{OPPort}}",
+					"port": "{{OPPort}}{{junction}}",
 					"path": [
 						"oauth2",
 						"introspect"
@@ -332,12 +332,12 @@
 					]
 				},
 				"url": {
-					"raw": "https://{{OPHost}}:{{OPPort}}/oauth2/token",
+					"raw": "https://{{OPHost}}:{{OPPort}}{{junction}}/oauth2/token",
 					"protocol": "https",
 					"host": [
 						"{{OPHost}}"
 					],
-					"port": "{{OPPort}}",
+					"port": "{{OPPort}}{{junction}}",
 					"path": [
 						"oauth2",
 						"token"
@@ -377,12 +377,12 @@
 					]
 				},
 				"url": {
-					"raw": "https://{{OPHost}}:{{OPPort}}/oauth2/introspect",
+					"raw": "https://{{OPHost}}:{{OPPort}}{{junction}}/oauth2/introspect",
 					"protocol": "https",
 					"host": [
 						"{{OPHost}}"
 					],
-					"port": "{{OPPort}}",
+					"port": "{{OPPort}}{{junction}}",
 					"path": [
 						"oauth2",
 						"introspect"
@@ -412,12 +412,12 @@
 					]
 				},
 				"url": {
-					"raw": "https://{{OPHost}}:{{OPPort}}/oauth2/userinfo",
+					"raw": "https://{{OPHost}}:{{OPPort}}{{junction}}/oauth2/userinfo",
 					"protocol": "https",
 					"host": [
 						"{{OPHost}}"
 					],
-					"port": "{{OPPort}}",
+					"port": "{{OPPort}}{{junction}}",
 					"path": [
 						"oauth2",
 						"userinfo"
@@ -476,12 +476,12 @@
 					]
 				},
 				"url": {
-					"raw": "https://{{OPHost}}:{{OPPort}}/oauth2/token",
+					"raw": "https://{{OPHost}}:{{OPPort}}{{junction}}/oauth2/token",
 					"protocol": "https",
 					"host": [
 						"{{OPHost}}"
 					],
-					"port": "{{OPPort}}",
+					"port": "{{OPPort}}{{junction}}",
 					"path": [
 						"oauth2",
 						"token"
@@ -533,12 +533,12 @@
 					}
 				},
 				"url": {
-					"raw": "https://{{OPHost}}:{{OPPort}}/oauth2/register",
+					"raw": "https://{{OPHost}}:{{OPPort}}{{junction}}/oauth2/register",
 					"protocol": "https",
 					"host": [
 						"{{OPHost}}"
 					],
-					"port": "{{OPPort}}",
+					"port": "{{OPPort}}{{junction}}",
 					"path": [
 						"oauth2",
 						"register"
@@ -596,12 +596,12 @@
 					]
 				},
 				"url": {
-					"raw": "https://{{OPHost}}:{{OPPort}}/oauth2/token",
+					"raw": "https://{{OPHost}}:{{OPPort}}{{junction}}/oauth2/token",
 					"protocol": "https",
 					"host": [
 						"{{OPHost}}"
 					],
-					"port": "{{OPPort}}",
+					"port": "{{OPPort}}{{junction}}",
 					"path": [
 						"oauth2",
 						"token"
@@ -637,12 +637,12 @@
 					]
 				},
 				"url": {
-					"raw": "https://{{OPHost}}:{{OPPort}}/oauth2/introspect",
+					"raw": "https://{{OPHost}}:{{OPPort}}{{junction}}/oauth2/introspect",
 					"protocol": "https",
 					"host": [
 						"{{OPHost}}"
 					],
-					"port": "{{OPPort}}",
+					"port": "{{OPPort}}{{junction}}",
 					"path": [
 						"oauth2",
 						"introspect"
@@ -688,12 +688,12 @@
 					"urlencoded": []
 				},
 				"url": {
-					"raw": "https://{{OPHost}}:{{OPPort}}/oauth2/authorize?client_id={{client_basic_id}}&response_type=code&redirect_uri=https://www.google.com&state=mWSGWl32gshyawaogasz54zmzlstu&scope=openid profile email&nonce=ahaw2eoagaw3awgaowco76awfao&code_challenge=k4Lnmw_E8IQDa28KUJw0FWCHStMduuRKfltH1roBkg4&code_challenge_method=S256",
+					"raw": "https://{{OPHost}}:{{OPPort}}{{junction}}/oauth2/authorize?client_id={{client_basic_id}}&response_type=code&redirect_uri=https://www.google.com&state=mWSGWl32gshyawaogasz54zmzlstu&scope=openid profile email&nonce=ahaw2eoagaw3awgaowco76awfao&code_challenge=k4Lnmw_E8IQDa28KUJw0FWCHStMduuRKfltH1roBkg4&code_challenge_method=S256",
 					"protocol": "https",
 					"host": [
 						"{{OPHost}}"
 					],
-					"port": "{{OPPort}}",
+					"port": "{{OPPort}}{{junction}}",
 					"path": [
 						"oauth2",
 						"authorize"
@@ -870,12 +870,12 @@
 					]
 				},
 				"url": {
-					"raw": "https://{{OPHost}}:{{OPPort}}/oauth2/token",
+					"raw": "https://{{OPHost}}:{{OPPort}}{{junction}}/oauth2/token",
 					"protocol": "https",
 					"host": [
 						"{{OPHost}}"
 					],
-					"port": "{{OPPort}}",
+					"port": "{{OPPort}}{{junction}}",
 					"path": [
 						"oauth2",
 						"token"
@@ -921,12 +921,12 @@
 					"urlencoded": []
 				},
 				"url": {
-					"raw": "https://{{OPHost}}:{{OPPort}}/oauth2/authorize?client_id={{client_basic_id}}&request={{request_object}}",
+					"raw": "https://{{OPHost}}:{{OPPort}}{{junction}}/oauth2/authorize?client_id={{client_basic_id}}&request={{request_object}}",
 					"protocol": "https",
 					"host": [
 						"{{OPHost}}"
 					],
-					"port": "{{OPPort}}",
+					"port": "{{OPPort}}{{junction}}",
 					"path": [
 						"oauth2",
 						"authorize"
@@ -1069,12 +1069,12 @@
 					]
 				},
 				"url": {
-					"raw": "https://{{OPHost}}:{{OPPort}}/oauth2/token",
+					"raw": "https://{{OPHost}}:{{OPPort}}{{junction}}/oauth2/token",
 					"protocol": "https",
 					"host": [
 						"{{OPHost}}"
 					],
-					"port": "{{OPPort}}",
+					"port": "{{OPPort}}{{junction}}",
 					"path": [
 						"oauth2",
 						"token"
@@ -1150,12 +1150,12 @@
 					]
 				},
 				"url": {
-					"raw": "https://{{OPHost}}:{{OPPort}}/oauth2/par",
+					"raw": "https://{{OPHost}}:{{OPPort}}{{junction}}/oauth2/par",
 					"protocol": "https",
 					"host": [
 						"{{OPHost}}"
 					],
-					"port": "{{OPPort}}",
+					"port": "{{OPPort}}{{junction}}",
 					"path": [
 						"oauth2",
 						"par"
@@ -1200,12 +1200,12 @@
 					"urlencoded": []
 				},
 				"url": {
-					"raw": "https://{{OPHost}}:{{OPPort}}/oauth2/authorize?client_id={{client_basic_id}}&request_uri={{request_uri}}",
+					"raw": "https://{{OPHost}}:{{OPPort}}{{junction}}/oauth2/authorize?client_id={{client_basic_id}}&request_uri={{request_uri}}",
 					"protocol": "https",
 					"host": [
 						"{{OPHost}}"
 					],
-					"port": "{{OPPort}}",
+					"port": "{{OPPort}}{{junction}}",
 					"path": [
 						"oauth2",
 						"authorize"
@@ -1349,12 +1349,12 @@
 					]
 				},
 				"url": {
-					"raw": "https://{{OPHost}}:{{OPPort}}/oauth2/ciba",
+					"raw": "https://{{OPHost}}:{{OPPort}}{{junction}}/oauth2/ciba",
 					"protocol": "https",
 					"host": [
 						"{{OPHost}}"
 					],
-					"port": "{{OPPort}}",
+					"port": "{{OPPort}}{{junction}}",
 					"path": [
 						"oauth2",
 						"ciba"
@@ -1399,12 +1399,12 @@
 					"urlencoded": []
 				},
 				"url": {
-					"raw": "https://{{OPHost}}:{{OPPort}}/oauth2/ciba_user_authorize/10abd4f2-9c4c-42df-9ff4-90a265b4a78a",
+					"raw": "https://{{OPHost}}:{{OPPort}}{{junction}}/oauth2/ciba_user_authorize/10abd4f2-9c4c-42df-9ff4-90a265b4a78a",
 					"protocol": "https",
 					"host": [
 						"{{OPHost}}"
 					],
-					"port": "{{OPPort}}",
+					"port": "{{OPPort}}{{junction}}",
 					"path": [
 						"oauth2",
 						"ciba_user_authorize",
@@ -1499,12 +1499,12 @@
 					]
 				},
 				"url": {
-					"raw": "https://{{OPHost}}:{{OPPort}}/oauth2/token",
+					"raw": "https://{{OPHost}}:{{OPPort}}{{junction}}/oauth2/token",
 					"protocol": "https",
 					"host": [
 						"{{OPHost}}"
 					],
-					"port": "{{OPPort}}",
+					"port": "{{OPPort}}{{junction}}",
 					"path": [
 						"oauth2",
 						"token"
@@ -1577,12 +1577,12 @@
 					]
 				},
 				"url": {
-					"raw": "https://{{OPHost}}:{{OPPort}}/oauth2/ciba",
+					"raw": "https://{{OPHost}}:{{OPPort}}{{junction}}/oauth2/ciba",
 					"protocol": "https",
 					"host": [
 						"{{OPHost}}"
 					],
-					"port": "{{OPPort}}",
+					"port": "{{OPPort}}{{junction}}",
 					"path": [
 						"oauth2",
 						"ciba"
@@ -1621,12 +1621,12 @@
 					"raw": "{\n    \"status\": \"success\",\n    \"metadata\": {\n        \"name\": \"John Doe\",\n        \"uid\": \"jdoe\",\n        \"preferred_username\": \"John Doe\",\n        \"given_name\": \"John\",\n        \"family_name\": \"Doe\",\n        \"AUTHENTICATION_LEVEL\": \"2\"\n    }\n}"
 				},
 				"url": {
-					"raw": "https://{{OPHost}}:{{OPPort}}/oauth2/ciba_status_update/1cc9d644-f831-4a7d-9008-4ea68acf3ea2",
+					"raw": "https://{{OPHost}}:{{OPPort}}{{junction}}/oauth2/ciba_status_update/1cc9d644-f831-4a7d-9008-4ea68acf3ea2",
 					"protocol": "https",
 					"host": [
 						"{{OPHost}}"
 					],
-					"port": "{{OPPort}}",
+					"port": "{{OPPort}}{{junction}}",
 					"path": [
 						"oauth2",
 						"ciba_status_update",
@@ -1687,12 +1687,12 @@
 					]
 				},
 				"url": {
-					"raw": "https://{{OPHost}}:{{OPPort}}/oauth2/token",
+					"raw": "https://{{OPHost}}:{{OPPort}}{{junction}}/oauth2/token",
 					"protocol": "https",
 					"host": [
 						"{{OPHost}}"
 					],
-					"port": "{{OPPort}}",
+					"port": "{{OPPort}}{{junction}}",
 					"path": [
 						"oauth2",
 						"token"
@@ -1766,12 +1766,12 @@
 					]
 				},
 				"url": {
-					"raw": "https://{{OPHost}}:{{OPPort}}/oauth2/ciba",
+					"raw": "https://{{OPHost}}:{{OPPort}}{{junction}}/oauth2/ciba",
 					"protocol": "https",
 					"host": [
 						"{{OPHost}}"
 					],
-					"port": "{{OPPort}}",
+					"port": "{{OPPort}}{{junction}}",
 					"path": [
 						"oauth2",
 						"ciba"
@@ -1832,12 +1832,12 @@
 					]
 				},
 				"url": {
-					"raw": "https://{{OPHost}}:{{OPPort}}/oauth2/token",
+					"raw": "https://{{OPHost}}:{{OPPort}}{{junction}}/oauth2/token",
 					"protocol": "https",
 					"host": [
 						"{{OPHost}}"
 					],
-					"port": "{{OPPort}}",
+					"port": "{{OPPort}}{{junction}}",
 					"path": [
 						"oauth2",
 						"token"
@@ -1897,12 +1897,12 @@
 					]
 				},
 				"url": {
-					"raw": "https://{{OPHost}}:{{OPPort}}/oauth2/token",
+					"raw": "https://{{OPHost}}:{{OPPort}}{{junction}}/oauth2/token",
 					"protocol": "https",
 					"host": [
 						"{{OPHost}}"
 					],
-					"port": "{{OPPort}}",
+					"port": "{{OPPort}}{{junction}}",
 					"path": [
 						"oauth2",
 						"token"
@@ -1992,12 +1992,12 @@
 					]
 				},
 				"url": {
-					"raw": "https://{{OPHost}}:{{OPPort}}/oauth2/token",
+					"raw": "https://{{OPHost}}:{{OPPort}}{{junction}}/oauth2/token",
 					"protocol": "https",
 					"host": [
 						"{{OPHost}}"
 					],
-					"port": "{{OPPort}}",
+					"port": "{{OPPort}}{{junction}}",
 					"path": [
 						"oauth2",
 						"token"
@@ -2039,12 +2039,12 @@
 					]
 				},
 				"url": {
-					"raw": "https://{{OPHost}}:{{OPPort}}/oauth2/introspect",
+					"raw": "https://{{OPHost}}:{{OPPort}}{{junction}}/oauth2/introspect",
 					"protocol": "https",
 					"host": [
 						"{{OPHost}}"
 					],
-					"port": "{{OPPort}}",
+					"port": "{{OPPort}}{{junction}}",
 					"path": [
 						"oauth2",
 						"introspect"
@@ -2123,12 +2123,12 @@
 					]
 				},
 				"url": {
-					"raw": "https://{{OPHost}}:{{OPPort}}/oauth2/token",
+					"raw": "https://{{OPHost}}:{{OPPort}}{{junction}}/oauth2/token",
 					"protocol": "https",
 					"host": [
 						"{{OPHost}}"
 					],
-					"port": "{{OPPort}}",
+					"port": "{{OPPort}}{{junction}}",
 					"path": [
 						"oauth2",
 						"token"
