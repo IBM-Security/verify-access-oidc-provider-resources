@@ -51,3 +51,11 @@ basic configuration that allows you to quickly try some of the features.
 - If you need to recreate the JWT or doing MTLS, you can find it inside the `keys.zip`.
 - The private-public keys are separated into folders that indicate how it is used.
 
+##### 4.3.1 Recreate JWT
+
+- Usually you need to recreate JWT because the JWT has expired
+- From the postman environment, copy the JWT that you want to recreate, for example `private_key_jwt`
+- Paste into [jwt.io](https://jwt.io), the jwt header and payload will be extracted on the right section.
+- Copy the private-public key from (in this case) `keys/private_key_jwt` folder - into jwt.io private-public key section.
+- You only need to change the `iat` or `exp` without changing anything else
+- Copy the new JWT back to the postman environment and re-run the flow.
