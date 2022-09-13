@@ -45,6 +45,9 @@ basic configuration that allows you to quickly try some of the features.
 - Download and import both `IBM Security Verify Access OIDC Provider.postman_collection.json` and `IBM Security Verify Access OIDC Provider.postman_environment.json`
 - You should be able to execute each command in the collection. There is documentation inside the postman collection itself.
 
+#### 4.3 Keys
 
-
+- The postman collection is using key and certificates to sign `request object` JWT or `client assertion` JWT or doing MTLS.
+- If you need to recreate the JWT or doing MTLS, you can find it inside the `keys.zip`.
+- The private-public keys are separated into folders that indicate how it is used.
 
