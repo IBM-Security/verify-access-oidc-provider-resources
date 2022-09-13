@@ -29,9 +29,14 @@ basic configuration that allows you to quickly try some of the features.
 - Ensure the credentials to connect to your Postgres database is correct
 - The LDAP server connection is not required at this point
 
-#### 3.3 Starting ISVA OP
+#### 3.3 (Optional) Modify provider.yml
+
+- If ISVA OP is behind a standard junction, you need to ensure the `definition/base_url` contain the junction.
+
+#### 3.4 Starting ISVA OP
 
 - Download `docker-compose.yml` from this repo into `$ISVAOP`
+- Check the version of downloaded ISVA OP image, and modify this `docker-compose.yml` accordingly
 - Execute: `docker-compose -f docker-compose.yml up`
 
 ### 4. Quick test
@@ -43,6 +48,8 @@ basic configuration that allows you to quickly try some of the features.
 #### 4.2 Steps
 
 - Download and import both `IBM Security Verify Access OIDC Provider.postman_collection.json` and `IBM Security Verify Access OIDC Provider.postman_environment.json`
+- If you directly test against the ISVA OP container, you can leave the `junction` environment variable empty.
+- If ISVA OP is behind a standard junction, you need to set the `junction` environment variable (example: `/isvaop`).
 - You should be able to execute each command in the collection. There is documentation inside the postman collection itself.
 
 #### 4.3 Keys
