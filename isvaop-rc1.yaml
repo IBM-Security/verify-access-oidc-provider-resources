@@ -159,6 +159,7 @@ spec:
               mkdir -p /config/data/keystore/isvaop_signing/signer
               mkdir -p /config/data/keystore/isvaop_signing/personal
               mkdir -p /config/data/templates/C
+              mkdir -p /config/data/templates/C/static
               cp /isvaop-tmp/resources_data_attributesources.yml  /config/data/attributesources.yml
               cp /isvaop-tmp/resources_data_clients_client_api.yml  /config/data/clients/client_api.yml
               cp /isvaop-tmp/resources_data_clients_client_basic.yml  /config/data/clients/client_basic.yml
