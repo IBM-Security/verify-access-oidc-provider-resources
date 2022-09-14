@@ -66,3 +66,22 @@ basic configuration that allows you to quickly try some of the features.
 - Copy the private-public key from (in this case) `keys/private_key_jwt` folder - into jwt.io private-public key section.
 - You only need to change the `iat` or `exp` without changing anything else
 - Copy the new JWT back to the postman environment and re-run the flow.
+
+### 5. Kubernetes Deployment (WIP)
+
+#### 5.1 Pre-requisite
+
+- Kubectl etc is installed
+
+#### 5.2 Steps
+
+- Download the `isvaop-rc1.yaml` in the directory of your choice
+- To start: `kubectl create -f kubernetes/isvaop-rc1.yaml`
+- This will start postgres DB and ISVA OP pods
+- The `isvaop-rc1.yaml` assumes the ISVA OP is deployed with `/isvaop` standard junction.
+- If you need to change any configuration, you need to decode the base64 string from `isvaop-rc1.yaml`, modify it, then encode it back as base64 string to put into the `isvaop-rc1.yaml` again.
+
+#### 5.3 Known limitation
+
+- There is issue of reading image and css file from templates
+- Issue using obfuscated strings (e.g. '{obf}alweroadhgal')
