@@ -28,7 +28,7 @@ examples
  - authcode_with_par_pkce
  |
  - ciba
-
+```
 - `resources` contains the database sql required for ISVAOP.
 - `resources` also contains `config_startr_kit` to start the ISVAOP container with basic configutation.
 - `examples` folder contains the configuration required for all in one configuration with advanced use cases.
