@@ -1,0 +1,9 @@
+ldapcfg:
+  - name: ldap_cfg_for_ldap_test
+    scope: subtree
+    user_object_classes: top,Person,organizationalPerson,inetOrgPerson
+    filter: (|(|(objectclass=ePerson)(objectclass=person))(objectclass=User))
+    selector: objectClass,cn,sn,givenName,userPassword
+    srv_conn: ldap_test
+    attribute: uid
+    baseDN: dc=example,dc=org

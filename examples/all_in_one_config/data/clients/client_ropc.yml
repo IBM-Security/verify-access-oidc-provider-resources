@@ -1,0 +1,12 @@
+client_id: client_ropc
+client_id_issued_at: 1642399207
+client_secret: "{obf2}zD338Gf1j8yRRQbCM+oOaE8Hn8wpJXBdU6n74aF0uZqdVeev9LKIqfazwdCWtiMb"  # wo08a2awfaouhaas
+client_secret_expires_at: 0
+client_name: Client ROPC
+enabled: true
+grant_types:
+  - password
+  - refresh_token
+token_endpoint_auth_method: client_secret_post
+id_token_signed_response_alg: RS256
+tls_client_certificate_bound_access_tokens: false

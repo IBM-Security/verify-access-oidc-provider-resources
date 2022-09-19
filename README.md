@@ -1,87 +1,37 @@
-# IBM Security Verify Access OIDC Provider (***BETA***) Enablement Materials
+# IBM Security Verify Access OIDC Provider Enablement Materials
 
-This repository is used to share enablement materials for IBM Security Verify Access (ISVA) OIDC Provider. 
+This repository is used to share enablement materials for IBM Security Verify Access OIDC Provider(ISVAOP). 
 
 ### 1. Overview
 
 ISVA OIDC Provider requires configuration files before it can operate. The intention here is to provide 
 basic configuration that allows you to quickly try some of the features.
 
-### 2. Pre-requisite
+The folder structure of the repository is as follows:
+```
+resources
+ |
+ - db
+ |  | 
+ |  - pg
+ |     | 
+ |     - init_isvaop_0.0.1.sql
+ |
+ - config_starter_kit
 
-- You have `docker` and `docker-compose` installed in your system
-- You have downloaded the docker image of ISVA OIDC Provider
-- You have installed Postgres database in your system
+examples
+ |
+ - all_in_one_config
+ |
+ - authcode_with_pkce
+ |
+ - authcode_with_par_pkce
+ |
+ - ciba
 
-### 3. Quick start
+- `resources` contains the database sql required for ISVAOP.
+- `resources` also contains `config_startr_kit` to start the ISVAOP container with basic configutation.
+- `examples` folder contains the configuration required for all in one configuration with advanced use cases.
+- `examples` folder contains sample nodejs relying party code to trigger OAuth2.0/OIDC runtime flows.
 
-#### 3.1 Setting up configuration file
-
-- Assume `$ISVAOP` points to your working directory
-- Create a directory `$ISVAOP/config`
-- Download `config.zip` from this repository into `$ISVAOP/config` folder
-- Extract it using `unzip config.zip`. After extraction you should have `$ISVAOP/config/data` and all the sub-folders.
-- You may delete the `config.zip`
-
-#### 3.2 Modify storage.yml
-
-- Modify `$ISVAOP/config/data/storage.yml` using your preferred editor
-- Ensure the credentials to connect to your Postgres database is correct
-- The LDAP server connection is not required at this point
-
-#### 3.3 (Optional) Modify provider.yml
-
-- If ISVA OP is behind a standard junction, you need to ensure the `definition/base_url` contain the junction.
-
-#### 3.4 Starting ISVA OP
-
-- Download `docker-compose.yml` from this repo into `$ISVAOP`
-- Check the version of downloaded ISVA OP image, and modify this `docker-compose.yml` accordingly
-- Execute: `docker-compose -f docker-compose.yml up`
-
-### 4. Quick test
-
-#### 4.1 Pre-requisite
-
-- Postman (https://www.postman.com)
-
-#### 4.2 Steps
-
-- Download and import both `IBM Security Verify Access OIDC Provider.postman_collection.json` and `IBM Security Verify Access OIDC Provider.postman_environment.json`
-- If you directly test against the ISVA OP container, you can leave the `junction` environment variable empty.
-- If ISVA OP is behind a standard junction, you need to set the `junction` environment variable (example: `/isvaop`).
-- You should be able to execute each command in the collection. There is documentation inside the postman collection itself.
-
-#### 4.3 Keys
-
-- The postman collection is using key and certificates to sign `request object` JWT or `client assertion` JWT or doing MTLS.
-- If you need to recreate the JWT or doing MTLS, you can find it inside the `keys.zip`.
-- The private-public keys are separated into folders that indicate how it is used.
-
-##### 4.3.1 Recreate JWT
-
-- Usually you need to recreate JWT because the JWT has expired
-- From the postman environment, copy the JWT that you want to recreate, for example `private_key_jwt`
-- Paste into [jwt.io](https://jwt.io), the jwt header and payload will be extracted on the right section.
-- Copy the private-public key from (in this case) `keys/private_key_jwt` folder - into jwt.io private-public key section.
-- You only need to change the `iat` or `exp` without changing anything else
-- Copy the new JWT back to the postman environment and re-run the flow.
-
-### 5. Kubernetes Deployment (WIP)
-
-#### 5.1 Pre-requisite
-
-- Kubectl etc is installed
-
-#### 5.2 Steps
-
-- Download the `isvaop-rc1.yaml` in the directory of your choice
-- To start: `kubectl create -f kubernetes/isvaop-rc1.yaml`
-- This will start postgres DB and ISVA OP pods
-- The `isvaop-rc1.yaml` assumes the ISVA OP is deployed with `/isvaop` standard junction.
-- If you need to change any configuration, you need to decode the base64 string from `isvaop-rc1.yaml`, modify it, then encode it back as base64 string to put into the `isvaop-rc1.yaml` again.
-
-#### 5.3 Known limitation
-
-- There is issue of reading image and css file from templates
-- Issue using obfuscated strings (e.g. '{obf}alweroadhgal')
+For all the release content for `22.09` navigate to the (Releases)[https://github.com/IBM-Security/ibm-security-verify-access-oidc-provider-resources/releases/22.09]
