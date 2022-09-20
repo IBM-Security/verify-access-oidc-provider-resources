@@ -1,0 +1,11 @@
+client_id: client_api
+client_id_issued_at: 1642399207
+client_secret: "{obf2}8NiOKrr7Wcx3juU4/IyKzRIJNn4EnhjjVvFl+JHV27xNnl9DwBkZW+ORNkYrAT65" # ahwoaor82noawasg
+client_secret_expires_at: 0
+client_name: API Client
+enabled: true
+grant_types:
+  - client_credentials
+token_endpoint_auth_method: client_secret_basic
+id_token_signed_response_alg: RS256
+tls_client_certificate_bound_access_tokens: false

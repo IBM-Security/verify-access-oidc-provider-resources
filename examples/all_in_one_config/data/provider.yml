@@ -1,0 +1,33 @@
+definition:
+  id: 1
+  name: OIDC Definition
+  grant_types:
+    - authorization_code
+    - implicit
+    - password
+    - client_credentials
+    - refresh_token
+    - urn:openid:params:grant-type:ciba
+  access_policy_id: isvaop_policy
+  pre_mappingrule_id: isvaop_pretoken
+  post_mappingrule_id: isvaop_posttoken
+  base_url: https://isvaop.ibm.com:445
+  token_settings:
+    issuer: https://isvaop.ibm.com
+    signing_alg: RS256
+    signing_keystore: isvaop_signing
+    signing_keylabel: rsakey
+  features:
+    consent_prompt: ALWAYS_PROMPT
+jwks:
+  signing_keystore: isvaop_signing
+template_macros:
+  request_macros:
+    - authorization_details
+    - claims
+    - user_code
+    - binding_message
+logging:
+  level: debug   # set to debug so you can see tracing from javascripts
+javascript:
+  use_pool: true # when using 'pool' mode, any changes in javascript file will trigger a reload. it is recommended during development.
