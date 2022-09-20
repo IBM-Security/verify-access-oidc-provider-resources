@@ -35,3 +35,5 @@ examples
 - `examples` folder contains sample nodejs relying party code to trigger OAuth2.0/OIDC runtime flows.
 
 For all the release content for `22.09` navigate to the (Releases)[https://github.com/IBM-Security/ibm-security-verify-access-oidc-provider-resources/releases/22.09]
+
+This is (documentation)[https://docs.verify.ibm.com/ibm-security-verify-access/] for IBM Security Verify Access OIDC Provider 
