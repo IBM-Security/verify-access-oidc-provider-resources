@@ -1,10 +1,8 @@
 
 
-The IBM Security Verify Access OIDC Provider functions properly, it must be configured and resource
+The IBM Security Verify Access OIDC Provider configuration for the container is supplied as YAML files, template files, JavaScript files along with other keystore. 
 
-The configuration for the container is supplied as YAML files, template files, JavaScript files along with other keystore. 
-
-The configuration for the container will need to be placed in the local directory which will be mounted before the container is started.
+The configuration for the container will need to be placed in the local directory which will then be mounted when the container is started.
 
 When the container first starts it will apply the configuration found within the local directory.
 
