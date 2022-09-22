@@ -61,3 +61,5 @@ data
 ```
 
 For deatiled documentation refer to the [documentation](https://docs.verify.ibm.com/ibm-security-verify-access/docs)
+
+*Note:* Keystores directory is not created and populated, instruction in the [document](https://docs.verify.ibm.com/ibm-security-verify-access/docs/concepts-keystores) can be followed to add new keystores, keys and certificates.
