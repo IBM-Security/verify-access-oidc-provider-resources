@@ -1,0 +1,15 @@
+version: '2'
+services:
+  ldap:
+    image: osixia/openldap:1.5.0
+    container_name: ldap
+    environment:
+        - LDAP_ORGANISATION=ibm
+        - LDAP_DOMAIN=ibm.com
+        - "LDAP_BASE_DN=dc=ibm,dc=com"
+        - LDAP_ADMIN_PASSWORD=passw0rd
+    volumes:
+      - .:/ldif
+    ports:
+        - 389:389
+        - 636:636
