@@ -19,20 +19,9 @@ resources
  |
  - config_starter_kit
 
-examples
- |
- - all_in_one_config
- |
- - authcode_with_pkce
- |
- - authcode_with_par_pkce
- |
- - ciba
 ```
 - `resources` contains the database sql required for ISVAOP.
-- `resources` also contains `config_startr_kit` to start the ISVAOP container with basic configutation.
-- `examples` folder contains the configuration required for all in one configuration with advanced use cases.
-- `examples` folder contains sample nodejs relying party code to trigger OAuth2.0/OIDC runtime flows.
+- `resources` also contains `config_starter_kit` to start the ISVAOP container with basic configutation.
 
 For all the release content for `22.09` navigate to the (Releases)[https://github.com/IBM-Security/ibm-security-verify-access-oidc-provider-resources/releases/22.09]
 
