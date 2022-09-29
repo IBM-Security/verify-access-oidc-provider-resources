@@ -12,4 +12,4 @@ docker run --rm --name pg -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=passw0r
 
 After that, apply the schema provided in *init_isvaop_0.0.1.sql*.
 
-Note: if you stop the container use the same command as above. There is no need to apply the schema.
+Note: if you stop the container, use the same command above to start it again. There is no need to re-apply the schema.
