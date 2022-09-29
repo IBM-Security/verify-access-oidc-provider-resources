@@ -21,7 +21,7 @@ resources
 
 ```
 - `resources` contains the database sql required for ISVAOP.
-- `resources` also contains `config_starter_kit` to start the ISVAOP container with basic configutation.
+- `resources` also contains `config_starter_kit` to start the ISVAOP container with basic configuration.
 
 For all the release content for `22.09` navigate to the (Releases)[https://github.com/IBM-Security/ibm-security-verify-access-oidc-provider-resources/releases/22.09]
 
