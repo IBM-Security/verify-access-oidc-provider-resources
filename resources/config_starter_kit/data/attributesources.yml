@@ -1,0 +1,19 @@
+# Copyright contributors to the IBM Security Verify Access OIDC Provider Resources project
+attribute_sources:
+  - id: 1                                  # Attribute source ID (Example of `value` attribute source).
+    name: display_name                     # Attribute source name.
+    type: value                            # Attribute source type: `value`
+    value: anonymous                       # Attribute source value. This contains the fixed value.
+  - id: 2                                  # Attribute source ID (Example of `credential` attribute source).
+    name: nickname                         # Attribute source name.
+    type: credential                       # Attribute source type: `credential`.
+    value: AZN_CRED_PRINCIPAL_NAME         # Attribute source value. This refers to a credential attribute.
+  - id: 3                                  # Attribute source ID (Example of `ldap` attribute source).
+    name: surname                          # Attribute source name.
+    type: ldap                             # Attribute source type: `ldap`.
+    value: sn                              # Attribute source value. This refers to an LDAP attribute to be retrieved.
+    scope: subtree                         # LDAP search scope.
+    filter: (cn={AZN_CRED_PRINCIPAL_NAME}) # LDAP search filter. This may contain macros, refer to Attribute Source documentation
+    selector: cn,userPassword              # LDAP selector containing other attributes that are retrieved together.
+    srv_conn: my_ldap                      # LDAP server connection name. This links to a server connection in `storage.yml` of type `ldap`.
+    baseDN: dc=acme,dc=com                 # LDAP base DN. This may contain macros similar to `filter`.

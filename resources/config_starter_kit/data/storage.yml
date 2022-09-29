@@ -1,3 +1,4 @@
+# Copyright contributors to the IBM Security Verify Access OIDC Provider Resources project
 runtime_db: hvdb                                # Configuration of runtime database. Points to the database server connection
 session_cache:
   type: db                                      # Specifies the type of session cache: in-memory, redis, or db
@@ -11,21 +12,3 @@ server_connections:
     credential:                                 # Credential information to connect to the server.
       username: postgres                        # Specifies the username to access the server.
       password: passw0rd                        # Specifies the password to access the server. It is recommended to obfuscate this.
-    ssl_settings:                               # SSL Settings
-      use_ssl: false                            # Specifies whether the SSL connection is required.
-      truststore: isvaop_keys                   # When `use_ssl` is true, specify the keystore that contains trusted certificates.
-  - name: hr_ldap                               # Connection name
-    type: ldap                                  # Connection type
-    hosts:                                      # List of host information (IP and port).
-      - hostname: 172.16.123.1                  # Server's hostname.
-        hostport: 389                           # Server's host port.
-        credential:                             # Credential information to connect to the host.
-          bind_dn: cn=root,secAuthority=Default # Specifies the binding credential for the LDAP server connection.
-          bind_password: passw0rd               # Specifies the binding password for the LDAP server connection. It is recommended to obfuscate this.
-        ssl_settings:                           # SSL settings for the server. It can be specified at the top level if the settings are common across hosts.
-          use_ssl: false                        # Specifies whether the SSL connection is required.
-          truststore: isvaop_keys               # When `use_ssl` is true, specify the keystore that contains trusted certificates.
-    conn_settings:                              # Connection pool settings for the LDAP server. It can be specified at the top level if the settings are common across hosts.
-      max_pool_size: 50                         # Maximum connection pool size.
-      connect_timeout: 3                        # Connect timeout, in seconds.
-      aged_timeout: 5                           # Aged timeout, in seconds.

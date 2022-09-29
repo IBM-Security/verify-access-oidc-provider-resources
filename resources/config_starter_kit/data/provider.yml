@@ -1,17 +1,16 @@
+# Copyright contributors to the IBM Security Verify Access OIDC Provider Resources project
+version: 22.09
+server:
+  ssl:
+    key: ks:server_keys/server_key
+    certificate: ks:server_keys/server_cert
 definition:
   id: 1
   name: OIDC Definition
   grant_types:
     - authorization_code
-    - implicit
-    - password
-    - client_credentials
-    - refresh_token
     - urn:openid:params:grant-type:ciba
-  access_policy_id: isvaop_policy
-  pre_mappingrule_id: isvaop_pretoken
-  post_mappingrule_id: isvaop_posttoken
-  base_url: https://isvaop.ibm.com:445
+  base_url: https://isvaop.ibm.com/isvaop
   token_settings:
     issuer: https://isvaop.ibm.com
     signing_alg: RS256
@@ -21,13 +20,3 @@ definition:
     consent_prompt: ALWAYS_PROMPT
 jwks:
   signing_keystore: isvaop_signing
-template_macros:
-  request_macros:
-    - authorization_details
-    - claims
-    - user_code
-    - binding_message
-logging:
-  level: debug   # set to debug so you can see tracing from javascripts
-javascript:
-  use_pool: true # when using 'pool' mode, any changes in javascript file will trigger a reload. it is recommended during development.
