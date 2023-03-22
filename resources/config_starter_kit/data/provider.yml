@@ -1,9 +1,12 @@
 # Copyright contributors to the IBM Security Verify Access OIDC Provider Resources project
-version: 22.09
+version: 23.03
 server:
   ssl:
     key: ks:server_keys/server_key
     certificate: ks:server_keys/server_cert
+  pages:
+    type: zip                       
+    content: "@templates.zip" 
 definition:
   id: 1
   name: OIDC Definition

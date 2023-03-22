@@ -1,0 +1,665 @@
+rules:
+  mapping:
+    - name: isvaop_pretoken
+      rule_type: javascript
+      content: |
+        importClass(Packages.com.tivoli.am.fim.trustserver.sts.utilities.IDMappingExtUtils);
+        importClass(Packages.com.tivoli.am.fim.trustserver.sts.utilities.OAuthMappingExtUtils);
+
+        IDMappingExtUtils.traceString("Starting Pre Token JS");
+
+        /**
+         * Use this mapping rule to enrich the session:
+         * - Resolve the claims requested for id_token (and userinfo)
+         *   Populate resolved claims into 'idtokenData' context
+         * - Adding extra claims for token introspection (and JWT access token)
+         *   Populate the extra claims into 'tokenData' context
+         * 
+         * User Metadata:
+         * Depending on the flow, user metadata may come from 'iv-jwt' or populated in
+         * ROPC javascript mapping rule or by CIBA endpoints / javascript mapping rule.
+         * But all the user metadata collected will be made availabe in STSUU attribute container.
+         * 
+         * Attribute Source:
+         * The system will resolve any attribute source mappings prior to this mapping rule execution.
+         * If the mapping should contain a value, it will be available in STSUU attribute container.
+         * 
+         * Claims to be resolved:
+         * The 'claims' context contains some helper method to retrieve id_token/userinfo
+         * voluntary or essential claims that need to be resolved.
+         */
+
+        IDMappingExtUtils.traceString("STSUU content: " + stsuu.toString());
+
+        var requestType = stsuu.getContextAttributes().getAttributeValueByName("request_type");
+        var grant_type = stsuu.getContextAttributes().getAttributeValueByName("grant_type");
+
+        for (const claim of claims.getAllClaims()) {
+
+            IDMappingExtUtils.traceString("Resolving claim: " + claim);
+            if (claim == "email_verified") {
+                idtokenData["email_verified"] = true;
+            } else if (claim == "updated_at") {
+                idtokenData["updated_at"] = Date.now();
+            } else {
+                /**
+                 * Trying to resolve the requested claim using user metadata or attribute source mapping
+                 * that is made available in STSUU attribute container
+                 */
+                var value = stsuu.getAttributeContainer().getAttributeValueByName(claim);
+                if (value != null) {
+                    idtokenData[claim] = value;
+                }
+            }
+        }
+
+        /**
+         * Example of adding 'acr' and 'amr' claim based on AUTHENTICATION_LEVEL attribute
+         */
+        var authLevel = stsuu.getAttributeValueByName("AUTHENTICATION_LEVEL");
+        if (authLevel == null || authLevel == "1") {
+            idtokenData.amr = "password";
+            idtokenData.acr = "urn:ibm:basic";
+        } else {
+            idtokenData.amr = "mmfa";
+            idtokenData.acr = "urn:ibm:mmfa";
+        }
+
+        if (requestType == "authorize") {
+            /**
+             * In OpenBanking requirement, the 'openbanking_intent_id' received in the 'claims'
+             * need to appear in the id_token.
+             */
+            var intentId = claims.getIDTokenClaimValues("openbanking_intent_id");
+            if (intentId != null && intentId != undefined) {
+                idtokenData.openbanking_intent_id = intentId[0];
+            }
+
+            /**
+             * Example of extra validation that can be done in this mapping rule
+             */
+            var state = stsuu.getContextAttributes().getAttributeValueByName("state");
+            if (state != null && state.length > 255) {
+                OAuthMappingExtUtils.throwSTSCustomUserMessageException("State is too long", 400, "invalid_request");
+            } 
+        }
+
+        /**
+         * Example of enriching introspection result
+         */
+        tokenData.groups = ["support", "user"];
+  mapping:
+    - name: isvaop_posttoken
+      rule_type: javascript
+      content: |
+        importClass(Packages.com.tivoli.am.fim.trustserver.sts.utilities.IDMappingExtUtils);
+        importClass(Packages.com.tivoli.am.fim.fedmgr2.trust.util.LocalSTSClient);
+        importClass(Packages.com.tivoli.am.fim.trustserver.sts.utilities.OAuthMappingExtUtils);
+
+        IDMappingExtUtils.traceString("Starting Post Token JS");
+
+        var requestType = stsuu.getContextAttributes().getAttributeValueByName("request_type");
+
+        /**
+         * Use this mapping rule to enrich the response.
+         * In general there should not be a lot of customization here.
+         * You can enrich the response parameter or header.
+         * For example in FAPI there's requirement to output certain HTTP header received in the header.
+         */
+
+        var interactionID = stsuu.getContextAttributes().getAttributeValueByName("x-fapi-interaction-id");
+        if (interactionID != null) {
+            headersOverride["x-fapi-interaction-id"] = interactionID;
+        }
+  mapping:
+    - name: dcr
+      rule_type: javascript
+      content: |
+        importClass(Packages.com.tivoli.am.fim.trustserver.sts.utilities.IDMappingExtUtils);
+        importClass(Packages.com.tivoli.am.fim.trustserver.sts.utilities.OAuthMappingExtUtils);
+
+        IDMappingExtUtils.traceString("Starting DCR JS");
+
+        /**
+         * Possible dcrAction values:
+         * "create": Dynamic Client Registration Request
+         * "update": Dynamic Client Update Request
+         * "read"  : Dynamic Client Read Request
+         * "delete": Dynamic Client Delete Request
+         */
+        IDMappingExtUtils.traceString("DCR action is: " + dcrAction);
+
+        /**
+         * What is expected to be done in this mapping rule:
+         * - Set the default values for metadata that are not specified in the request.
+         *   For example, if the client metadata does not specify `grant_types`,
+         *   then by default the `grant_types` metadata value is the `authorization_code`.
+         * - Replace or overwrite metadata values that the authorization server does not support or would like to enforce.
+         *   For example, the authorization server want to enforce the `token_endpoint_auth_method` to `private_key_jwt`.
+         * - Throw `invalid_client_metadata` error for metadata values that are not supported by the authorization server.
+         * - Further metadata validation. For example, in OpenBanking specification, some client metadata need to be bound 
+         *   by metadata inside the `software_statement`. Another example is to further check claims inside `software_statement`
+         *   such as the issuer, expiry, and other claims.
+         */
+        if (dcrAction === "create" || dcrAction === "update") {
+
+            /**
+             * Metadata claims coming from DCR request is available in the STSUU context attributes
+             * These claims a
+             */
+
+            /**
+             * Example of setting default value
+             */
+            var grant_types = stsuu.getContextAttributes().getAttributeValuesByName("grant_types");
+            if (grant_types == null) {
+                stsuu.addContextAttribute(new Attribute("grant_types", "urn:ibm:names:ITFIM:oauth:body:param", "authorization_code"));
+            }
+
+            /**
+             * Example of validating metadata claim
+             */
+            var ss = stsuu.getContextAttributes().getAttributeValueByName("software_statement");
+            if (ss != null) { // Software statement exists
+                /**
+                 * Software statement claim having attribute type 'urn:ibm:names:ITFIM:oauth:ss:param'
+                 */
+                var iss = stsuu.getContextAttributes().getAttributeValueByNameAndType("iss", "urn:ibm:names:ITFIM:oauth:ss:param");
+                if (iss != "http://openbankingdirectory.com") {
+                    OAuthMappingExtUtils.throwSTSCustomUserMessageException("Unexpected software statement issuer.", 400, "invalid_client_metadata");
+                }
+            }
+
+        } else if (dcrAction === "delete") {
+
+            // uncomment the line below to prevent DCR deletion using a JS mapping rule
+            // OAuthMappingExtUtils.throwSTSAccessDeniedMessageException("Deletion is not allowed", "You are not allowed to delete a dynamic client.")
+
+        }
+
+  mapping:
+    - name: notifyuser
+      rule_type: javascript
+      content: |
+        importClass(Packages.com.tivoli.am.fim.trustserver.sts.utilities.IDMappingExtUtils);
+        importClass(Packages.com.tivoli.am.fim.trustserver.sts.utilities.OAuthMappingExtUtils);
+        importClass(Packages.com.ibm.security.access.httpclient.HttpClient);
+
+        IDMappingExtUtils.traceString("Starting NotifyUser JS");
+
+        /**
+         * What is expected to be done in this javascript:
+         * - Based on user hint, retrieve more information about this user, such as:
+         *    + Notification preference
+         *    + User device information
+         *    + Email or phone number
+         * - Validate the incoming user_code (if any)
+         * - Validate whether binding_message is acceptable (when notifying user via sms vs email may have different requirement)
+         * - Decide the type of authenticator used, and notify the user. Some of the possible scenarios are:
+         *    + When using internal authenticator, send the user authorization endpoint as part of the notification message to the user.
+         *      The notification message may depend on notification preference such as email or sms.
+         *    + When using external authenticator with check status endpoint, make a call to the external authenticator
+         *      with user information to be notified and expect the external authenticator returns with the URL to check the status.
+         *      Set this URL in the ExternalAuthenticatorWithCheckStatusEndpoint() object.
+         *    + When using external authenticator without check status endpoint, make a call to the external authenticator
+         *      with user information to be notified, along with the status update endpoint and bearer token to be used.
+         *      The expectation here, the external authenticator will do a callback to the status update endpoint once the authentication is done.
+         */
+
+        /**
+         * When it comes from 'login_hint', it will be available under attribute 'sub'.
+         * An 'id_token_hint' should have 'sub' or any other claims inside it.
+         * However 'login_hint_token' is a free-format JWT, so it may not contain 'sub'.
+         * Tips: print the STSUU to find out what information is available from the hint.
+         * 
+         * For 'login_hint' or 'id_token_hint', at this point, the system has validate the signature of JWT.
+         * Further claims such as 'exp' or 'iss' can be validated here if necessary.
+         */
+        IDMappingExtUtils.traceString("Print STSUU to check available hint: " + stsuu.toString());
+        var hint = stsuu.getAttributeValueByName("sub");
+
+        /**
+         * Based on the hint, may want to load the user information here.
+         * There are LDAP utility or UserLookupHelper that can be used.
+         * You can copy the example from ropc.js of how to retrieve information using UserLookupHelper
+         */
+
+        /**
+         * Printing some information to the log
+         */
+        IDMappingExtUtils.traceString("Auth Request ID: " + ciba.getAuthRequestID());
+
+        // This information should be sent as part of notification message to the user
+        IDMappingExtUtils.traceString("User Authorize endpoint: " + ciba.getUserAuthorizeEndpoint());
+
+        // These information should be sent to external authenticator to do callback later on
+        IDMappingExtUtils.traceString("Status Update endpoint: " + ciba.getStatusUpdateEndpoint());
+        IDMappingExtUtils.traceString("Bearer token: " + ciba.getBearerToken());
+
+        /**
+         * Validating binding_message and user_code
+         */
+        var bindMsg = stsuu.getContextAttributes().getAttributeValueByName("binding_message");
+        var userCode = stsuu.getContextAttributes().getAttributeValueByName("user_code");
+
+        if (bindMsg != null && bindMsg.length > 50) { // Example of checking the binding_message and throw the appropriate error
+            OAuthMappingExtUtils.throwSTSCustomUserMessageException("Test invalid binding", 400, "invalid_binding_message")
+        }
+
+        if (userCode != null && userCode == "invalidCode") { // Example of checking the user_code and throw the appropriate error
+            OAuthMappingExtUtils.throwSTSCustomUserMessageException("Test invalid user code", 400, "invalid_user_code")
+        }
+
+        /**
+         * This is an example how to decide the authenticator used.
+         */
+        if (hint == "unknown@test.com") {
+            OAuthMappingExtUtils.throwSTSCustomUserMessageException("Test unknown user ID", 400, "unknown_user_id");
+        } else if (hint == "checkstatuspass@test.com") {
+            ciba.setAuthenticator(new ExternalAuthenticatorWithCheckStatusEndpoint("https://checkstatus.com?status=pass", ""));
+        } else if (hint == "checkstatusfail@test.com") {
+            ciba.setAuthenticator(new ExternalAuthenticatorWithCheckStatusEndpoint("https://checkstatus.com?status=fail", "thisischeckstatusbearertoken"));
+        } else if (hint == "updatestatus@test.com") {
+            ciba.setAuthenticator(new ExternalAuthenticator());
+        } else {
+            ciba.setAuthenticator(new InternalAuthenticator());
+        }
+  mapping:
+    - name: checkstatus
+      rule_type: javascript
+      content: |
+        importClass(Packages.com.tivoli.am.fim.trustserver.sts.utilities.IDMappingExtUtils);
+        importClass(Packages.com.tivoli.am.fim.trustserver.sts.utilities.OAuthMappingExtUtils);
+        importClass(Packages.com.ibm.security.access.httpclient.HttpClient);
+
+        IDMappingExtUtils.traceString("Starting CheckStatus JS");
+        IDMappingExtUtils.traceString("Auth Request ID: " + ciba.getAuthRequestID());
+
+        /**
+         * What is expected to be done here:
+         * - Calling the configured check status endpoint to get the latest authentication status
+         *   Use http module to make http callout
+         * - Populate user metadata in the case of successful authentication
+         *   The metadata serve as credential attributes that can be used for grant enrichment
+         *   At least the metadata should contain 'uid' claim (or claim indicated in 'subject_attribute_name')
+         *   as this will be used as the 'sub' in id_token
+         * - Send the status back using one of the method: pending(), failed() or success()
+         */
+
+        if (ciba.getCheckStatusEndpoint() == "https://checkstatus.com?status=fail") { // for demo
+
+            ciba.failed(); // user rejected
+
+        } else if (ciba.getCheckStatusEndpoint() == "https://checkstatus.com?status=pass") { // for demo
+
+            var meta = {};
+            meta["uid"] = "25202QWRUA";
+            meta["email"] = "asmith@test.com";
+            meta["preferred_username"] = "asmith";
+            meta["given_name"] = "Alex";
+            meta["family_name"] = "Smith";
+            ciba.success(meta); // user has been authenticated
+
+        } else {
+
+            /**
+             * This is provided as an example how to do HTTP callout to check the authentication status
+             */
+            let header = new Headers();
+            header.addHeader("Content-Type", "application/json");
+
+            let resp = HttpClientV2.httpPut(ciba.getCheckStatusEndpoint(), header, {}, null, null, null, null, null, null, null, null, true, null);
+            if (resp.hasError()) { // check for error
+
+                IDMappingExtUtils.traceString("HTTP callout has error: " + resp.getError());
+                ciba.pending(); // since this is polling, assume no status change, try again next time
+
+            } else {
+
+                IDMappingExtUtils.traceString("StatusCode: " + resp.getCode());
+                IDMappingExtUtils.traceString("Body: " + resp.getBody());
+            
+                if (resp.getCode() == 204) {
+
+                    IDMappingExtUtils.traceString("User has been authenticated");
+
+                    /**
+                     * These metadata might come from the check status endpoint
+                     * Or might be populated using LDAP call
+                     */
+                    var meta = {};
+                    meta["uid"] = "25202QWRUA";
+                    meta["email"] = "asmith@test.com";
+                    meta["preferred_username"] = "asmith";
+                    meta["given_name"] = "Alex";
+                    meta["family_name"] = "Smith";
+                    ciba.success(meta);
+
+                } else if (resp.getCode() == 200) {
+
+                    /**
+                     * Assume this means the authentication is not done
+                     * But for the next check, need to hit different url indicated in 'location' claim
+                     */
+                    let pl = JSON.parse(resp.getBody());
+                    ciba.pending(pl.location);
+
+                } else {
+
+                    /**
+                     * Assume this means user has rejected the authentication
+                     */
+                    ciba.failed();
+
+                }
+            }
+        }
+  mapping:
+    - name: ropc
+      rule_type: javascript
+      content: |
+        importClass(Packages.com.tivoli.am.fim.trustserver.sts.utilities.IDMappingExtUtils);
+        importClass(Packages.com.tivoli.am.fim.trustserver.sts.utilities.OAuthMappingExtUtils);
+        importClass(Packages.com.ibm.security.access.user.UserLookupHelper);
+
+        IDMappingExtUtils.traceString("Starting ROPC JS");
+
+        var username = stsuu.getContextAttributes().getAttributeValueByName("username");
+        var password = stsuu.getContextAttributes().getAttributeValueByName("password");
+
+        /**
+         * This is an example of how you could verify the username and password with an
+         * user registry before the access token is generated, therefore preventing
+         * the scenario where access tokens are created for invalid users and stored in
+         * the cache with no way to remove them till they expire.
+         *
+         * A prerequisite for using this example is configuring an ldap configuration
+         * in ldapcfg.yml and associated ldap server connection in storage.yml
+         * 
+         * This example is the default method for verifying the username and password.
+         * To enable this example, change the "ropc_registry_validation" variable 
+         * to "true".
+         */
+        var ropc_registry_validation = false;
+
+        if (ropc_registry_validation) {
+
+            // Assuming there is ldap configuration name "user_registry" in ldapcfg.yml
+            var userLookupHelper = new UserLookupHelper("user_registry");
+
+            /**
+             * Assuming the users has distinguished name pattern:
+             * cn=<username>,dc=ibm,dc=com
+             */
+            var user = userLookupHelper.getUserByNativeId("cn=" + username + ",dc=ibm,dc=com");
+            if (user.hasError()) { // check for error
+
+                /**
+                 * This is the recommended way to check the error and logging it
+                 */
+                IDMappingExtUtils.traceString("Throw exception - getUserByNativeId failed with error: " + user.getError());
+                OAuthMappingExtUtils.throwSTSException("Unable to authenticate user.");
+
+            } else if (!user.authenticate(password)) { // check the password
+
+                IDMappingExtUtils.traceString("Throw exception - failed to authenticate user: " + user.getNativeId());
+                OAuthMappingExtUtils.throwSTSException("Invalid user or password.");
+
+            } else {
+
+                /**
+                 * Populate user metadata in the case of successful authentication
+                 * The metadata serve as credential attributes that can be used for grant enrichment
+                 * The metadata at least should contain 'uid' claim or any claim indicated in 'subject_attribute_name'
+                 * under provider.yml 'authentication' stanza as this will be used as the token 'sub' claim 
+                 */
+                IDMappingExtUtils.traceString("Authentication is successful.");
+                userData.uid = username;
+                userData.given_name = user.getAttribute("givenName");
+                userData.family_name = user.getAttribute("sn");
+                userData.preferred_username = username;
+
+            }
+
+        } else if (username == "peter" && password == "secret") { // for demo purpose
+
+            userData.uid = "phare@zoo.org";
+            userData.given_name = "peter";
+            userData.family_name = "hare";
+            userData.preferred_username = "Pete Bunny";
+
+        } else {
+            OAuthMappingExtUtils.throwSTSInvalidGrantMessageException("Invalid user or password.", "Either user or password is not valid.");
+        }
+  mapping:
+    - name: ciba_notifyuser_sample
+      rule_type: javascript
+      content: |
+        importClass(Packages.com.tivoli.am.fim.trustserver.sts.utilities.IDMappingExtUtils);
+        importClass(Packages.com.tivoli.am.fim.trustserver.sts.utilities.OAuthMappingExtUtils);
+        importClass(Packages.com.ibm.security.access.httpclient.HttpClient);
+        importClass(Packages.com.ibm.security.access.user.UserLookupHelper);
+
+        /**
+         * What is expected to be done in this javascript:
+         * - Based on user hint, retrieve more information about this user, such as:
+         *    + Notification preference
+         *    + User device information
+         *    + Email or phone number
+         * - Validate the incoming user_code (if any)
+         * - Validate whether binding_message is acceptable (when notifying user via sms vs email may have different requirement)
+         * - Decide the type of authenticator used, and notify the user. Some of the possible scenarios are:
+         *    + When using internal authenticator, send the user authorization endpoint as part of the notification message to the user.
+         *      The notification message may depend on notification preference such as email or sms.
+         *    + When using external authenticator with check status endpoint, make a call to the external authenticator
+         *      with user information to be notified and expect the external authenticator returns with the URL to check the status.
+         *      Set this URL in the ExternalAuthenticatorWithCheckStatusEndpoint() object.
+         *    + When using external authenticator without check status endpoint, make a call to the external authenticator
+         *      with user information to be notified, along with the status update endpoint and bearer token to be used.
+         *      The expectation here, the external authenticator will do a callback to the status update endpoint once the authentication is done.
+         */
+
+
+        /**
+         * valid the auth request here
+         * @param username
+         * @param bindMsg
+         * @param userCode
+         */
+        function validateAuthRequest(username, bindMsg, userCode) {
+            /*
+            TODO: implement auth request validation here
+             */
+            let isInvalidBindMsg = false;
+            let isInvalidUserCode = false;
+
+            if (isInvalidBindMsg) {
+                OAuthMappingExtUtils.throwSTSCustomUserMessageException("Invalid binding", 400, "invalid_binding_message");
+            }
+            if (isInvalidUserCode) {
+                OAuthMappingExtUtils.throwSTSCustomUserMessageException("Invalid user code", 400, "invalid_user_code");
+            }
+        }
+
+
+        /**
+         * get user mobile number from ldap
+         * @param userId
+         * @returns string
+         */
+        function getMobileNumberFromLdap(userId) {
+            let ulh = new UserLookupHelper("ldap");
+            if (!ulh.init()) {
+                OAuthMappingExtUtils.throwSTSCustomUserMessageException("Ldap server failure", 500, "server_error");
+            }
+            let user = ulh.getUser(userId);
+            if (user.hasError()) {
+                // TODO: handle error here
+                OAuthMappingExtUtils.throwSTSCustomUserMessageException(user.getError(), 400, "invalid_request");
+            }
+            let mobile = user.getAttribute("mobile");
+
+            // TODO: mobile number validation
+            if (mobile === undefined || mobile == null || mobile === "") {
+                OAuthMappingExtUtils.throwSTSCustomUserMessageException("Invalid mobile number", 400, "invalid_request");
+            }
+
+            return mobile;
+        }
+
+        /**
+         * Send sms message
+         * @param username
+         * @param phone
+         * @param message
+         */
+        function smsKickoff(username, phone, message) {
+            // SMS is sent directly to a gateway with a HTTP call.
+            // The format will be dependent on particular SMS gateway
+            // TODO: implement base on the particular SMS gateway going to be used
+            let smsGatewayURL = "http://smsGateway:8080";
+            let fromNumber = "+12345678";
+
+            //from = +12345678, to = $DEST_NO$, message = $MSG$
+            let headers = new Headers();
+            headers.addHeader("Accept", "application/json");
+            let params = new Parameters();
+            params.addParameter("from", "+12345678");
+            params.addParameter("to", phone);
+            params.addParameter("message", getBindingMessageWithLink(deviceFlowState));
+
+            let header = new Headers();
+            header.addHeader("Accept", "application/json");
+
+            let payload = {
+                "from": fromNumber,
+                "to": phone,
+                "message": message
+            }
+
+            let resp = HttpClientV2.httpPost(smsGatewayURL, header, JSON.stringify(payload), null, null, null, null, null, null, null, null, true, null);
+            if (resp.hasError()) {
+                // TODO: handle error here
+                OAuthMappingExtUtils.throwSTSCustomUserMessageException(resp.getError(), 400, "invalid_request");
+            } else if (resp.getCode() !== 201) {
+                // TODO: handle error here
+                OAuthMappingExtUtils.throwSTSCustomUserMessageException("Failed to send sms to phone: " + phone, 400, "invalid_request");
+            } else {
+                IDMappingExtUtils.traceString("Sending SMS worked for phone: " + phone);
+            }
+        }
+
+        /**
+         * Send notification to start internal auth
+         *
+         * @param username
+         * @param phone
+         */
+        function internalAuthNotify(username, phone) {
+            /**
+             * Below is a sample flow to notify user using SMS
+             * TODO: update the sample implementation as needed
+             */
+            let userAuthorizeEndpoint = ciba.getUserAuthorizeEndpoint();
+            let message = "Use this link to login: " + userAuthorizeEndpoint;
+            smsKickoff(username, phone, message);
+
+            ciba.setAuthenticator(new InternalAuthenticator());
+        }
+
+        /**
+         * Send notification to start external auth using an external auth server
+         *
+         * @param username
+         * @param phone
+         */
+        function externalAuthNotify(username, phone) {
+            /**
+             * Below is a sample flow
+             * TODO: update the sample implementation as needed
+             */
+
+            let authServerBaseUrl = "https://externalAuthServer:8080";
+            let authRequestId = ciba.getAuthRequestID(); // stsuu.getContextAttributes().getAttributeValueByName("requestId");
+            let statusUpdateEndpoint = ciba.getStatusUpdateEndpoint();
+            let bearerToken = ciba.getBearerToken();
+
+            /**
+             * Notify the external auth server there is a new auth request
+             * The external auth server can have it own mechanism to notify user about the auth request
+             * If the auth server cannot notify user about the new auth request, notify user can be done in this JavaScript.
+             * Please refer the Optional section
+             *
+             * Sample payload to notify the external auth server.
+             * TODO: update the payload accordingly base on the auth server going to be used
+             *
+             * @param authReqId the auth request id
+             * @param statusUpdateEndpoint allows the external auth server to notify isva oidc provider about the auth result
+             * @param bearerToken the external auth server need to provider the bear token in to request Authorization header
+             *                    when notifying isva oidc provider about the auth result
+             * @param username the username to login (login hint)
+             *
+             */
+            let externalAuthNotificationEndpoint = authServerBaseUrl + "/authRequest";
+            let header = new Headers();
+            header.addHeader("Content-Type", "application/json");
+            let payload = {
+                "authReqId": authRequestId,
+                "statusUpdateEndpoint": statusUpdateEndpoint,
+                "bearerToken": bearerToken,
+                "username": username
+            }
+            let resp = HttpClientV2.httpPost(externalAuthNotificationEndpoint, header, JSON.stringify(payload), null, null, null, null, null, null, null, null, true, null)
+            if (resp.hasError()) {//getError
+                // TODO: handle error here
+                OAuthMappingExtUtils.throwSTSCustomUserMessageException(resp.getError(), 400, "invalid_request");
+            } else if (resp.getCode() !== 201) {
+                // TODO: handle error here
+                OAuthMappingExtUtils.throwSTSCustomUserMessageException("Failed to connect to external auth server", 400, "invalid_request");
+            }
+
+            /**
+             * Optional
+             * Notify the user using SMS instead of letting the auth server to notify the user
+             * TODO: update the sample notify user as needed
+             */
+            // let externalAuthEndpoint = authServerBaseUrl + "/authEndpoint?authReqId=" + authRequestId + "&username=" + username;
+            // let message = "Use this link to login: " + externalAuthEndpoint;
+            // smsKickoff(username, phone, message);
+
+            ciba.setAuthenticator(new ExternalAuthenticator());
+        }
+
+        /**
+         * When it comes from 'login_hint', it will be available under attribute 'sub'.
+         * An 'id_token_hint' likely will have 'sub' as well.
+         * However 'login_hint_token' is a free-format JWT, so it may not contain 'sub'.
+         * Tips: print the STSUU to find out what information is available from the hint.
+         *
+         * For 'login_hint' or 'id_token_hint', at this point, the system has validate the signature of JWT.
+         * Further claims such as 'exp' or 'iss' can be validated here if necessary.
+         */
+        IDMappingExtUtils.traceString("STSUU: " + stsuu.toString());
+        let hint = stsuu.getAttributeValueByName("sub");
+
+        /**
+         * Based on the hint, may want to load the user information here.
+         * There are LDAP utility or UserLookupHelper that can be used.
+         */
+        let bindMsg = stsuu.getContextAttributes().getAttributeValueByName("binding_message");
+        let userCode = stsuu.getContextAttributes().getAttributeValueByName("user_code");
+        validateAuthRequest(hint, bindMsg, userCode);
+
+        let mobile = getMobileNumberFromLdap(hint);
+
+
+        /**
+         * TODO: implement notify user base on using internal auth or external auth
+         */
+
+        // Use this for internal auth
+        // internalAuthNotify(hint, mobile);
+
+        // Or use this for external auth
+        // externalAuthNotify(hint, mobile);
+                                 
