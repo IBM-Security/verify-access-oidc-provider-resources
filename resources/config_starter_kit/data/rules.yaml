@@ -80,7 +80,6 @@ rules:
         } else {
             ciba.setAuthenticator(new ExternalAuthenticatorWithCheckStatusEndpoint("https://checkstatus.com?status=pending", ""));
         }
-  mapping:
     - name: checkstatus
       content: |
         /**

@@ -88,7 +88,6 @@ rules:
          * Example of enriching introspection result
          */
         tokenData.groups = ["support", "user"];
-  mapping:
     - name: isvaop_posttoken
       rule_type: javascript
       content: |
@@ -111,7 +110,6 @@ rules:
         if (interactionID != null) {
             headersOverride["x-fapi-interaction-id"] = interactionID;
         }
-  mapping:
     - name: dcr
       rule_type: javascript
       content: |
@@ -176,8 +174,6 @@ rules:
             // OAuthMappingExtUtils.throwSTSAccessDeniedMessageException("Deletion is not allowed", "You are not allowed to delete a dynamic client.")
 
         }
-
-  mapping:
     - name: notifyuser
       rule_type: javascript
       content: |
@@ -264,7 +260,6 @@ rules:
         } else {
             ciba.setAuthenticator(new InternalAuthenticator());
         }
-  mapping:
     - name: checkstatus
       rule_type: javascript
       content: |
@@ -354,7 +349,6 @@ rules:
                 }
             }
         }
-  mapping:
     - name: ropc
       rule_type: javascript
       content: |
@@ -431,7 +425,6 @@ rules:
         } else {
             OAuthMappingExtUtils.throwSTSInvalidGrantMessageException("Invalid user or password.", "Either user or password is not valid.");
         }
-  mapping:
     - name: ciba_notifyuser_sample
       rule_type: javascript
       content: |
