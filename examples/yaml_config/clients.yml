@@ -1,0 +1,89 @@
+clients:
+  - client_id: client_api
+    client_id_issued_at: 1642399207
+    client_secret: "{obf2}8NiOKrr7Wcx3juU4/IyKzRIJNn4EnhjjVvFl+JHV27xNnl9DwBkZW+ORNkYrAT65" # ahwoaor82noawasg
+    client_secret_expires_at: 0
+    client_name: API Client
+    enabled: true
+    grant_types:
+      - client_credentials
+    token_endpoint_auth_method: client_secret_basic
+    id_token_signed_response_alg: RS256
+    tls_client_certificate_bound_access_tokens: false 
+  - client_id: client_basic
+    client_secret: notused # this is not used since we use private_key_jwt to authenticate
+    client_name: Client Basic
+    enabled: true
+    redirect_uris:
+    - https://www.google.com
+    grant_types:
+    - authorization_code
+    - implicit
+    - refresh_token
+    response_types:
+    - code
+    - token id_token
+    - code id_token
+    token_endpoint_auth_method: private_key_jwt
+    token_endpoint_auth_signing_alg: ES512
+    jwks_b64: eyJrZXlzIjpbeyJraWQiOiJjbGllbnRhc3NlcnRpb24iLCJrdHkiOiJFQyIsInVzZSI6InNpZyIsImNydiI6IlAtNTIxIiwieCI6IkFWbmZhRXBlQ3JWdDhtb3pxVmFKMzdoVzdKQmhIVnU5cThCSzB3Ni13VEFoSjhGQm9XRnhPUEdULUtjMC1oMHdlTlRoMVVNR0VvWG1YRkFyTjZxR3AxeXoiLCJ5IjoiQU42SEsyYnFmRDJZXzNyNl9XWmE1WjZJeVphbzhBdzlPWkJKMElNcmJubWF5NnowLU9naHFkN05DaFI2Qk9Sa2l6TGV0U2UtNEhiT3hsbFBTenRIRlAyZCJ9LHsia3R5IjoiUlNBIiwiZSI6IkFRQUIiLCJ1c2UiOiJzaWciLCJraWQiOiJyZXF1ZXN0b2JqZWN0IiwibiI6ICJtUDZadDZxTjNZRUU0YXNDb01tdlZFSmNYVHYwMEkxQWFtSnZta1V4MEF4OS13X0FjQmE3emVFZ3lzRUswQ1FHMmpYTEdhUlEtVzBENzRaNUtfYUFueDdkYlJTbUFyeGUtZGxHbTA4X0tvT3dFcmgyZEhxNV9HZXpZVVJUV2Rkdl8yaGpPYkpjb3hRdHpLbVFRQ2JjTEhfOF9BR2RWTzZLWllmUEVsUHFzRVcxVkVkaUZrT2dMM0xQdzJLUlZQQjNnNnlqM3QyT3Q5ZWRCOEFuS3d5RDhlRkRwVjQ4US13OURmZ3FZX1hsT1lURGd0cEJER0FEUF9YU2NMNUxlN3daUmZacDFONHFSWWVhazJOaktNRFVweFB0MHRYNWQtR0hqVEc2cGg5Si1oekJGblNiVVVwUUVIb2w3ZkFWeTZHRk93VmJZOS15SmtvVjdDZWJzdERyeVEifV19
+    id_token_signed_response_alg: RS256
+    request_object_signing_alg: PS384 
+  - client_id: client_ciba
+    client_id_issued_at: 1642399207
+    client_secret: notused # this is not used since we use MTLS to authenticate
+    client_secret_expires_at: 0
+    client_name: Client CIBA
+    enabled: true
+    grant_types:
+      - refresh_token
+      - urn:openid:params:grant-type:ciba
+    token_endpoint_auth_method: tls_client_auth
+    tls_client_auth_subject_dn: CN=clientID01,OU=security,O=IBM,L=singapore,ST=singapore,C=SG
+    tls_client_certificate_bound_access_tokens: true
+    jwks_b64: eyJrZXlzIjpbeyJraWQiOiJjbGllbnRhc3NlcnRpb24iLCJrdHkiOiJFQyIsInVzZSI6InNpZyIsImNydiI6IlAtNTIxIiwieCI6IkFWbmZhRXBlQ3JWdDhtb3pxVmFKMzdoVzdKQmhIVnU5cThCSzB3Ni13VEFoSjhGQm9XRnhPUEdULUtjMC1oMHdlTlRoMVVNR0VvWG1YRkFyTjZxR3AxeXoiLCJ5IjoiQU42SEsyYnFmRDJZXzNyNl9XWmE1WjZJeVphbzhBdzlPWkJKMElNcmJubWF5NnowLU9naHFkN05DaFI2Qk9Sa2l6TGV0U2UtNEhiT3hsbFBTenRIRlAyZCJ9LHsia3R5IjoiUlNBIiwiZSI6IkFRQUIiLCJ1c2UiOiJzaWciLCJraWQiOiJyZXF1ZXN0b2JqZWN0IiwibiI6ICJtUDZadDZxTjNZRUU0YXNDb01tdlZFSmNYVHYwMEkxQWFtSnZta1V4MEF4OS13X0FjQmE3emVFZ3lzRUswQ1FHMmpYTEdhUlEtVzBENzRaNUtfYUFueDdkYlJTbUFyeGUtZGxHbTA4X0tvT3dFcmgyZEhxNV9HZXpZVVJUV2Rkdl8yaGpPYkpjb3hRdHpLbVFRQ2JjTEhfOF9BR2RWTzZLWllmUEVsUHFzRVcxVkVkaUZrT2dMM0xQdzJLUlZQQjNnNnlqM3QyT3Q5ZWRCOEFuS3d5RDhlRkRwVjQ4US13OURmZ3FZX1hsT1lURGd0cEJER0FEUF9YU2NMNUxlN3daUmZacDFONHFSWWVhazJOaktNRFVweFB0MHRYNWQtR0hqVEc2cGg5Si1oekJGblNiVVVwUUVIb2w3ZkFWeTZHRk93VmJZOS15SmtvVjdDZWJzdERyeVEifV19
+    id_token_signed_response_alg: RS256
+    request_object_signing_alg: PS256
+    backchannel_token_delivery_mode: poll
+    backchannel_user_code_parameter: false
+  - client_id: client_dpop
+    client_id_issued_at: 1642399207
+    client_secret: "{obf2}gEHhJy8MmOZ+s/58qtVnZ5oD9+HsD7Rw5oc8XSR4aIw="  # ahwouvzsvawraww
+    client_secret_expires_at: 0
+    client_name: Client DPoP
+    enabled: true
+    grant_types:
+      - password
+      - refresh_token
+    token_endpoint_auth_method: tls_client_auth
+    tls_client_auth_subject_dn: CN=clientID01,OU=security,O=IBM,L=singapore,ST=singapore,C=SG
+    tls_client_certificate_bound_access_tokens: true
+    id_token_signed_response_alg: RS256
+    dpop_bound_access_tokens: true
+    dpop_signing_alg: PS256
+    dpop_single_use_jti: false
+  - client_id: client_ropc
+    client_id_issued_at: 1642399207
+    client_secret: "{obf2}zD338Gf1j8yRRQbCM+oOaE8Hn8wpJXBdU6n74aF0uZqdVeev9LKIqfazwdCWtiMb"  # wo08a2awfaouhaas
+    client_secret_expires_at: 0
+    client_name: Client ROPC
+    enabled: true
+    grant_types:
+      - password
+      - refresh_token
+    token_endpoint_auth_method: client_secret_post
+    id_token_signed_response_alg: RS256
+    tls_client_certificate_bound_access_tokens: false
+  - client_id: client_dcr_owner
+    client_id_issued_at: 1642399207
+    client_secret: notused # this is not used since we use MTLS to authenticate
+    client_secret_expires_at: 0
+    client_name: DCR Client Owner
+    enabled: true
+    grant_types:
+      - client_credentials
+    scopes:
+      - cdr:registration
+    token_endpoint_auth_method: tls_client_auth
+    tls_client_auth_subject_dn: CN=clientID01,OU=security,O=IBM,L=singapore,ST=singapore,C=SG
+    tls_client_certificate_bound_access_tokens: false
