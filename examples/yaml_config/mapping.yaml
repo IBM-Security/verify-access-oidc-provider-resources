@@ -655,4 +655,53 @@ rules:
 
         // Or use this for external auth
         // externalAuthNotify(hint, mobile);
-                                 
+    - name: stsclient
+      rule_type: javascript
+      content: |
+        importClass(Packages.com.tivoli.am.fim.trustserver.sts.utilities.IDMappingExtUtils);
+        importClass(Packages.com.tivoli.am.fim.trustserver.sts.utilities.OAuthMappingExtUtils);
+        importClass(Packages.com.ibm.security.access.user.UserLookupHelper);
+        importClass(Packages.com.tivoli.am.fim.fedmgr2.trust.util.LocalSTSClient);
+        importClass(Packages.com.ibm.security.access.HttpClient);
+        IDMappingExtUtils.traceString("Entering idmap mapping rule")
+
+        //Creating SOAP payload to be sent to ISVA
+        let payload = STSClient.createSOAPRequest("http://schemas.xmlsoap.org/ws/2005/02/trust/Validate","issuer/stsuu/stsuu","appliesto/stsuu/stsuu",'<stsuu:STSUniversalUser xmlns:stsuu="urn:ibm:names:ITFIM:1.0:stsuuser"><stsuu:Principal><stsuu:Attribute name="name" type="urn:ibm:names:ITFIM:5.1:accessmanager"><stsuu:Value>FAMC01C</stsuu:Value></stsuu:Attribute> </stsuu:Principal><stsuu:AttributeList><stsuu:Attribute name="technicalId"><stsuu:Value>FAMC01C</stsuu:Value></stsuu:Attribute><stsuu:Attribute name="authenticationMeanId"><stsuu:Value>07</stsuu:Value></stsuu:Attribute><stsuu:Attribute name="dacLevel"><stsuu:Value>3</stsuu:Value></stsuu:Attribute><stsuu:Attribute name="user-agent"><stsuu:Value>httpclient/SMA-Test</stsuu:Value></stsuu:Attribute><stsuu:Attribute name="ip-address"><stsuu:Value>10.9.181.1</stsuu:Value></stsuu:Attribute><stsuu:Attribute name="requestorType"><stsuu:Value>Internal_application</stsuu:Value></stsuu:Attribute><stsuu:Attribute name="xLogId"><stsuu:Value>810989854427658437</stsuu:Value></stsuu:Attribute></stsuu:AttributeList></stsuu:STSUniversalUser>','http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#UsernameToken');
+        //ISVA STS endpoint
+        var url = 'https://isva:443/TrustServerWST13/services/RequestSecurityToken'
+        var headers = new Headers();
+        headers.addHeader('Content-Type','application/xml');
+        //HTTP call to invoke the STS chain
+        var responsePost = HttpClientV2.httpPost(url, headers, payload, "rt_profile", "easuser", "Passw0rd", null, null, null, null, null, null, null); 
+
+        if(responsePost.getCode() == 200){
+            //STS Response token can be retrived using following methods
+            let stsResponse = STSClient.processResponse(responsePost.getBody())
+            IDMappingExtUtils.traceString("getStatus : " + stsResponse.statusCode);
+            IDMappingExtUtils.traceString("getresponseToken : " + stsResponse.responseToken);
+        }
+    - name: idmap
+      rule_type: javascript
+      content: |
+        importClass(Packages.com.tivoli.am.fim.trustserver.sts.utilities.IDMappingExtUtils);
+        importClass(Packages.com.tivoli.am.fim.trustserver.sts.utilities.OAuthMappingExtUtils);
+        importClass(Packages.com.ibm.security.access.user.UserLookupHelper);
+        //This mapping rule is used during token exchange flow, mainly for the purpose of sub validation.
+        IDMappingExtUtils.traceString("Entering idmap mapping rule")
+        IDMappingExtUtils.traceString("getPrincipalName: " + stsuu.getPrincipalName());
+        //Retrieve sub from stsuu
+        let sub = stsuu.getPrincipalName();
+        IDMappingExtUtils.traceString("iss: " + stsuu.getAttributeContainer().getAttributeValueByName("iss"));
+        IDMappingExtUtils.traceString("exp: " + stsuu.getAttributeContainer().getAttributeValueByName("exp"));
+        //LDAP validation for sub
+        var userLookupHelper = new UserLookupHelper("ldap_test_cfg_01");
+        IDMappingExtUtils.traceString("sub validation for : " + sub);
+
+        if(userLookupHelper.isReady()){
+
+            var user = userLookupHelper.getUser(sub);
+            if(user.getId() == null){
+                IDMappingExtUtils.traceString("sub validation failed for : " + sub);
+            }
+        }
+        IDMappingExtUtils.traceString("STSUU: " + stsuu.toString());
