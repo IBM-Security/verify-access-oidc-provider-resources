@@ -1,5 +1,5 @@
 # Copyright contributors to the IBM Security Verify Access OIDC Provider Resources project
-version: 23.03
+version: 23.12
 server:
   ssl:
     key: ks:server_keys/server_key
