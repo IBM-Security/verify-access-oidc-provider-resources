@@ -1,0 +1,43 @@
+<!-- Copyright contributors to the IBM Security Verify Access OIDC Provider Resources project -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>$OIDC_TITLE_USERAUTH$</title>
+    <link rel="stylesheet" type="text/css" href="/oauth2/static/styles.css" />
+  </head>
+  <body>
+    <div class="header">
+      <div class="brandingLogo"><img alt="$TEXT_COMPANY_LOGO$" src="/oauth2/static/ibm-logo.png" /></div>
+    </div>
+    <div class="content">
+      <div class="contentHeader">
+        <h1>$OIDC_TITLE_USERAUTH$</h1>
+        <div class="instructions"></div>
+      </div>
+      <div class="pageContent">
+       
+          <p>$OIDC_TEXT_USERAUTH_COMPLETE$</p><br/>
+          <p>$OIDC_TEXT_USERAUTH_PERMITTED$</p>
+          <br/>
+          <br/>
+          [RPT oauthTokenScopeRepeatable]
+          <p>@OAUTH_TOKEN_SCOPE_DESC_REPEAT@</p>
+          [ERPT oauthTokenScopeRepeatable]
+          <br/>
+          <br/>
+          [RPT oauthTokenEntitlementRepeatable]
+          <p>@OAUTH_TOKEN_ENTITLEMENT_DESC_REPEAT@</p>
+          [ERPT oauthTokenEntitlementRepeatable]
+          <table>
+            <tr>
+              <td><form action="@ACTION@" method="get">
+                <!-- <input type="hidden" name="themeId" value="@THEME_ID@"/> -->
+                <input type="submit" value="$OIDC_BUTTON_ENTER_ANOTHER$" class="submitButton" />
+              </form></td>
+            </tr>
+          </table>
+   
+    </div>
+  </body>
+</html>

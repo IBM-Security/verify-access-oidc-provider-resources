@@ -1,0 +1,31 @@
+<!-- Copyright contributors to the IBM Security Verify Access OIDC Provider Resources project -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>$OIDC_TITLE_USERAUTH$</title>
+    <link rel="stylesheet" type="text/css" href="/oauth2/static/styles.css" />
+  </head>
+  <body>
+    <div class="header">
+      <div class="brandingLogo"><img alt="$TEXT_COMPANY_LOGO$" src="/oauth2/static/ibm-logo.png" /></div>
+    </div>
+    <div class="content">
+      <div class="contentHeader">
+        <h1>$OIDC_TITLE_USERAUTH$</h1>
+        <div class="instructions"></div>
+      </div>
+      <div class="pageContent">
+
+        <p>$OIDC_TEXT_USERAUTH_ENTER$</p><br/>
+        <form action="@ACTION@" method="get">
+          <label>$OIDC_TEXT_USERAUTH_CODE$</label>
+          <input type="text" name="user_code" placeholder="$OIDC_TEXT_USERAUTH_CODE$"/>
+          <br/>
+          <br/>
+          <input type="submit" value="$OIDC_BUTTON_SUBMIT$" class="submitButton"  style="width: 80px"/>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
