@@ -1,4 +1,4 @@
-version: 23.03
+version: 24.08
 definition:
   id: 1
   name: OIDC Definition
