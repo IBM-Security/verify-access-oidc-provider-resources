@@ -705,3 +705,31 @@ rules:
             }
         }
         IDMappingExtUtils.traceString("STSUU: " + stsuu.toString());
+    - name: preauth_notifycode
+      rule_type: javascript
+      content: |    
+        importClass(Packages.com.tivoli.am.fim.trustserver.sts.utilities.IDMappingExtUtils);
+        IDMappingExtUtils.traceString("CODE$$" + preauth.getTransactionCode()+"$");
+    - name: preauth_userauth
+      rule_type: javascript
+      content: |    
+        importClass(Packages.com.tivoli.am.fim.trustserver.sts.utilities.IDMappingExtUtils);
+        importClass(Packages.com.tivoli.am.fim.trustserver.sts.utilities.OAuthMappingExtUtils);
+        importClass(Packages.com.ibm.security.access.httpclient.HttpClient);
+
+        IDMappingExtUtils.traceString("CallbackURL$$" + preauth.getCallbackURL() + '$$');
+        var payload = preauth.getPayload();
+        if (preauth.isCallback()) {
+        if (payload.status === "approved") {
+            var metadata = {};
+            metadata.uid = "prabbit";
+            metadata.given_name = "peter";
+            metadata.family_name = "rabbit";
+            metadata.preferred_username = "peter@zoo.org";
+            preauth.approved(metadata);
+        } else if (payload.status === "denied") {
+            IDMappingExtUtils.traceString("denied " );
+            preauth.denied();
+        } else {
+            OAuthMappingExtUtils.throwSTSCustomUserMessageException("Expecting authentication status", 400, "invalid_request");
+        }
