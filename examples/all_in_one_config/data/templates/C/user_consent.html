@@ -1,4 +1,4 @@
-<!-- Copyright contributors to the IBM Security Verify Access OIDC Provider Resources project -->
+<!-- Copyright contributors to the IBM Verify Identity Access OIDC Provider Resources project -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
@@ -55,6 +55,25 @@
           [RPT oauthTokenScopeNewApprovalRepeatable]
           <input type="checkbox" name="scope" value="@OAUTH_TOKEN_SCOPE_REPEAT@" checked="checked"/><label>@OAUTH_TOKEN_SCOPE_REPEAT@</label><br />
           [ERPT oauthTokenScopeNewApprovalRepeatable]
+          <!-- END NON-TRANSLATABLE -->
+
+          <p/> 
+
+          <p>$TEXT_CONSENT_AD_ALREADY_APPROVED$</p>
+          <!-- START NON-TRANSLATABLE -->
+          <ul style="margin-left: 20px">
+          [RPT oauthTokenADPreapprovedRepeatable]
+          <li>@OAUTH_TOKEN_SCOPE_REPEAT@</li>
+          <input type="hidden" name="ADT" value="@OAUTH_TOKEN_AD_REPEAT@" />
+          [ERPT oauthTokenADPreapprovedRepeatable]
+          </ul>
+          <!-- END NON-TRANSLATABLE -->
+          <br/>
+          <p>$TEXT_CONSENT_AD_PENDING_APPROVAL$</p>
+          <!-- START NON-TRANSLATABLE -->
+          [RPT oauthTokenADNewApprovalRepeatable]
+          <input type="checkbox" name="ADT" value="@OAUTH_TOKEN_AD_ID_REPEAT@" checked="checked"/><label>@OAUTH_TOKEN_AD_REPEAT@</label><br />
+          [ERPT oauthTokenADNewApprovalRepeatable]
           <!-- END NON-TRANSLATABLE -->
 
           <p/> 
