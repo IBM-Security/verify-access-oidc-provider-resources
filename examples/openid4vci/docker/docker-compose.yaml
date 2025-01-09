@@ -1,0 +1,47 @@
+# This file can be used to start the ISVA OpenID Provider
+# and its supporting Postgres DB.  
+
+services:
+  isvaopldap:
+    container_name: isvaopldap
+    image: bitnami/openldap:latest
+    environment:
+      LDAP_ADMIN_USERNAME: root
+      LDAP_ADMIN_PASSWORD: passw0rd
+      LDAP_USERS: user_1,user_2
+      LDAP_PASSWORDS: secret1,secret2
+      LDAP_ROOT: dc=ibm,dc=com
+      LDAP_ADMIN_DN: cn=root,dc=ibm,dc=com
+  isvaopdb:
+    container_name: isvaopdb
+    image: icr.io/ivia/ivia-postgresql:11.0.0.0
+    environment:
+      POSTGRES_USER: isvaopuser
+      POSTGRES_PASSWORD: passw0rd
+      POSTGRES_SSL_KEYDB: /var/postgres/config/pg_keydb.pem
+    volumes:
+      - ./postgres_config:/var/postgres/config:ro
+      - ./postgres_config/postgresql_update_hba.sh:/docker-entrypoint-initdb.d/postgresql_update_hba.sh:ro
+  isvaop:
+    container_name: isvaop
+    image: icr.io/ivia/ivia-oidc-provider:24.12
+    ports:
+      - "8436:8436"
+    volumes:
+      - ./oidc_provider_config:/var/isvaop/config:ro
+    depends_on:
+      - isvaopdb
+      - isvaopldap
+  isvaopgw:
+    container_name: isvaopgw
+    image: icr.io/ibmappgateway/ibm-application-gateway:latest
+    ports:
+      - "8443:8443"
+    volumes:
+      - ./iag_config:/var/iag/config:ro
+    depends_on:
+      - isvaop
+networks:
+  default:
+    external: true
+    name: isvaopnw-default
