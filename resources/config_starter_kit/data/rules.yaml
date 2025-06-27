@@ -250,9 +250,9 @@ rules:
                     OAuthMappingExtUtils.throwSTSCustomUserMessageException("Unexpected software statement issuer.", 400, "invalid_client_metadata");
                 }
             }
-                /**
-                 * Bearer token claim having attribute type 'urn:ibm:names:ITFIM:oauth:bearertoken:param'
-                 */
+            /**
+            * Bearer token claim having attribute type 'urn:ibm:names:ITFIM:oauth:bearertoken:param'
+            */
             var claim = stsuu.getContextAttributes().getAttributeValueByNameAndType("custom_claim", "urn:ibm:names:ITFIM:oauth:bearertoken:param");
             if (claim != null && claim != "custom_claim_value") { 
               OAuthMappingExtUtils.throwSTSCustomUserMessageException("Unexpected claim in the bearer token.", 400, "invalid_client_metadata");
