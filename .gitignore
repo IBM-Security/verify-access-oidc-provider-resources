@@ -1,0 +1,5 @@
+.DS_Store
+node_modules
+mochawesome-report
+.nyc_output
+examples/openid4vci/javascript_source/oidvci/package-lock.json
