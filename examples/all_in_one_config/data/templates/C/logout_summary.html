@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>$OIDC_TITLE_LOGOUT_SUMMARY$</title>
+    <link rel="stylesheet" type="text/css" href="/oauth2/static/styles.css" />
+  </head>
+
+  <body>
+    <div class="header">
+      <div class="brandingLogo"><img alt="$TEXT_COMPANY_LOGO$" src="/oauth2/static/ibm-logo.png" /></div>
+    </div>
+    <div class="content">
+      <div class="contentHeader">
+        <h1 class="pageTitle">$OIDC_TITLE_LOGOUT_SUMMARY$</h1>
+        <div class="instructions"></div>
+      </div>
+      
+      <div class="pageContent">
+        <table>
+          <thead>
+            <tr>
+              <th>$OIDC_TEXT_LOGOUT_SUMMARY_APPNAME$</th>
+              <th>$OIDC_TEXT_LOGOUT_SUMMARY_RESULT$</th>
+              <th>$OIDC_TEXT_LOGOUT_SUMMARY_CAUSE$</th>
+            </tr>
+          </thead>
+          <tbody>
+            [RPT summaryRepeatable]
+            <tr>
+              <td>@APPNAME_REPEAT@</td>
+              <td>@RESULT_REPEAT@</td>
+              <td>@CAUSE_REPEAT@</td>
+            </tr>
+            [ERPT summaryRepeatable]
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>

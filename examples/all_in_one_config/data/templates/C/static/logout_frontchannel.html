@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>$OIDC_TITLE_LOGOUT_FRONTCHANNEL$</title>
+    <link rel="stylesheet" type="text/css" href="/oauth2/static/styles.css" />
+  </head>
+  <body>
+    <div class="header">
+      <div class="brandingLogo"><img alt="$TEXT_COMPANY_LOGO$" src="/oauth2/static/ibm-logo.png" /></div>
+    </div>
+
+    <div class="content">
+      <div class="contentHeader">
+        <h1 class="pageTitle">$OIDC_TITLE_LOGOUT_CONSENT$</h1>
+        <div class="instructions"></div>
+      </div>
+        <form name="statusForm" action="@ACTION@" method="post">
+          <p>$TEXT_CONSENT_CLIENT$</p>
+          <div class="sectionTitle">
+            <p><b>@CLIENT_NAME@</b></p>
+          </div> 
+          <ul style="margin-left: 20px">
+          [RPT paramRepeatable]
+          <li>@PRM_NAME_REPEAT@</li>
+          <input type="hidden" name="@PRM_NAME_REPEAT@" value="@PRM_VALUE_REPEAT@" />
+          [ERPT paramRepeatable]
+          </ul>
+         <ul style="margin-left: 20px">
+          [RPT statusRepeatable]
+          <li>@SID_NAME_REPEAT@</li>
+          <li>@SID_VALUE_REPEAT@</li>
+          <li>@STATUS_NAME_REPEAT@</li>
+          <input type="hidden" name="@SID_NAME_REPEAT@" value="@SID_VALUE_REPEAT@" />
+          <input type="hidden" id="@STATUS_NAME_REPEAT@" name="@STATUS_NAME_REPEAT@" value="false" />
+          [ERPT statusRepeatable]
+        </ul>
+        </form>
+      </div>
+      <!--<script type="text/javascript" src="/oauth2/static/js/logout_frontchannel.min.js"></script>-->
+    </div>
+    <div>
+      [RPT iframeRepeatable]
+      <iframe id="@IFRAME_ID_REPEAT@" src="@IFRAME_SRC_REPEAT@" @IFRAME_ATTR_REPEAT@></iframe>
+      [ERPT iframeRepeatable]
+    </div>
+  </body>
+</html>
