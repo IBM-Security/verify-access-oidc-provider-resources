@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>$OIDC_TITLE_LOGOUT_CONSENT$</title>
+    <link rel="stylesheet" type="text/css" href="/oauth2/static/styles.css" />
+  </head>
+  <body>
+    <div class="header">
+      <div class="brandingLogo"><img alt="$TEXT_COMPANY_LOGO$" src="/oauth2/static/ibm-logo.png" /></div>
+    </div>
+    <div class="content">
+      <div class="contentHeader">
+        <h1 class="pageTitle">$OIDC_TITLE_LOGOUT_CONSENT$</h1>
+        <div class="instructions"></div>
+        
+      </div>
+      <div class="pageContent">
+        <br/>
+        <h3>$OIDC_TEXT_LOGOUT_CONSENT_HEADER$</h3>
+        <br/>
+        <br/>
+        <p>$OIDC_TEXT_LOGOUT_CONSENT_LOGIN$</p>
+        <p>$OIDC_TEXT_LOGOUT_CONSENT_SUBHEADER$</p>
+        <br/>
+        <form name="consentForm" id="consentForm" action="@ACTION@" method="post">
+          [RPT paramRepeatable]<input type="hidden" name="@PRM_NAME_REPEAT@" value="@PRM_VALUE_REPEAT@" />
+          [ERPT paramRepeatable]
+          <input type="hidden" name="consent"/>
+          <div class="controls">
+            <input id="btnApprove" class="submitButton" type="button" value="$OIDC_BUTTON_YES$" style="width: 80px"/>
+            &nbsp;&nbsp;
+            <input id="btnDeny" class="submitButton" type="button" value="$OIDC_BUTTON_NO$" style="width: 80px"/>
+          </div>
+        </form>
+      </div>
+      <script type="text/javascript" src="/oauth2/static/logout_consent.js"></script>
+    </div>
+  </body>
+</html>
