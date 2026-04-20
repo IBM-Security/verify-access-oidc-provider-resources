@@ -1,0 +1,79 @@
+---
+version: 24.06
+
+server:
+  ssl:
+    front_end:
+      certificate: "@iag_keydb.pem"
+
+policies:
+  http_transformations:
+    request:
+      # - name: set_iv_jwt
+      #   paths:
+      #     - "/oauth2/authorize?*"
+      #   method: "GET"
+      #   rule: |
+      #     -- The ISVA OIDC Provider requires an iv-jwt header containing
+      #     -- the user identity.  We use a fake user here called testenv and
+      #     -- create an unsigned JWT.
+      #     if HTTPRequest.containsHeader("iv-jwt") ~= true then
+
+      #       local basexx = require "basexx"
+
+      #       HTTPRequest.setHeader("iv-jwt",
+      #         basexx.to_url64('{"alg":"none","typ":"JWT"}') .. "." ..
+      #         basexx.to_url64('{"uid": "testenv"}') ..  ".")
+      #     end
+      - name: authenticate_preauth_consumer
+        paths:
+          -  "/oauth2/preauth"
+        method: "*"
+        rule: |
+          -- We need to validate the X-Preauth-Consumer-Jwt header to ensure
+          -- the request is from a trusted consumer, i.e. Trusted OID4VCI Issuer
+          if HTTPRequest.containsHeader("X-Preauth-Consumer-Jwt") == true then
+            -- Do some validation of the JWT
+          else
+            HTTPResponse.setHeader("Content-Type", "application/json")
+            HTTPResponse.setBody("{'error': 'Validation of X-Preauth-Consumer-Jwt failed!!'}")
+            HTTPResponse.setStatusCode(401)
+            Control.responseGenerated(true)
+          end
+      - name: map_to_oauth2_wk_config
+        paths:
+          - "/oauth2/.well-known/oauth-authorization-server"
+        method: "GET"
+        rule: |
+          -- Simply route the request to .well-known/openid-configuration
+          HTTPRequest.setURL("/oauth2/.well-known/openid-configuration")
+    response:
+      - name: map_from_oauth2_wk_config
+        paths:
+          - "/oauth2/.well-known/oauth-authorization-server"
+        method: "GET"
+        rule: |
+          -- We're going to inject "code_challenge_methods_supported": [ "plain" ]
+          -- into the response payload
+          
+          local cjson = require "cjson"
+          local payload = cjson.decode(HTTPResponse.getBody())
+
+          local pkceMethods = { "plain" }
+          setmetatable(pkceMethods, cjson.array_mt)
+          payload["code_challenge_methods_supported"] = pkceMethods
+          HTTPResponse.setBody(cjson.encode(payload))
+
+resource_servers:
+  - path: /oauth2
+    transparent_path: true
+    connection_type: ssl
+    identity_headers:
+      basic_auth:
+        mode: ignore
+    servers:
+      - host: isvaop
+        port: 8436
+        ssl:
+          certificate: "@op_server_pub.crt"
+
