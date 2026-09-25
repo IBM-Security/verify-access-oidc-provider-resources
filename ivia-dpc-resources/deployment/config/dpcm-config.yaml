@@ -1,0 +1,42 @@
+
+server_connections:
+  - name: dpcmdb            # connection name — referenced by DPC_DB_CONNECTION env var
+    type: postgresql
+    database_name: dpcm
+    hosts:
+      - hostname: dpcm-postgres     # container/service name — must match Docker/K8s DNS
+        hostport: 5432
+    credential:
+      username: dpcm_user
+      password: dpcm_password       # use a Kubernetes Secret in production
+    ssl:
+      certificate:
+        - https_keys                # keystore name below (contains the Postgres signer cert)
+    conn_settings:
+      min_pool_size: 5
+      max_pool_size: 10
+      aged_timeout: 5m
+keystore:
+  - name: https_keys
+    type: pem
+    certificate:
+      - label: httpservercert
+        content: '@httpservercert.crt'   # DPC HTTPS cert (for DPC's own TLS listener)
+      - label: postgres
+        content: '@server.crt'           # Postgres server's self-signed CA cert
+    key:
+      - label: httpserverkey
+        content: '@httpserverkey.key'    # DPC HTTPS private key
+        
+server:
+  ssl:
+    key: "ks:https_keys/httpserverkey"
+    certificate: "ks:https_keys/httpservercert"
+  
+    
+
+logging:
+  level: info
+
+activation_code: ""
+
