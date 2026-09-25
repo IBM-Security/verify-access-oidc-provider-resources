@@ -1,0 +1,83 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: dpcm-postgres
+    environment:
+      POSTGRES_DB: dpcm
+      POSTGRES_USER: dpcm_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-dpcm_password}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8"
+    ports:
+      - 0.0.0.0:5433:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.postgres.sql:/docker-entrypoint-initdb.d/init-db.postgres.sql:ro
+      - ./certs/postgres/server.crt:/var/lib/postgresql/server.crt:ro
+      - ./certs/postgres/server.key:/var/lib/postgresql/server.key
+    entrypoint:
+      - "/bin/sh"
+      - "-c"
+      - |
+        chown postgres:postgres /var/lib/postgresql/server.key
+        chmod 600 /var/lib/postgresql/server.key
+        exec docker-entrypoint.sh postgres \
+          -c ssl=on \
+          -c ssl_cert_file=/var/lib/postgresql/server.crt \
+          -c ssl_key_file=/var/lib/postgresql/server.key
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dpcm_user -d dpcm"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - dpcm-net
+
+  dpc:
+    image: icr.io/ivia/ivia-dpc:26.09
+    container_name: ivia-dpc
+    read_only: true
+    hostname: dpcm
+    volumes:
+      - ./config:/var/dpcm/config:z
+      - ./geolite2:/app/geolite2:z
+    tmpfs:
+      - /var/tmp/
+      - /tmp/
+      - /app/config:uid=1001,gid=0
+    ports:
+      - 8438:8438
+      - 8440:8440
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - dpcm-net
+
+  iag:
+    image: icr.io/ibmappgateway/ibm-application-gateway:26.06
+    container_name: ivia-dpc-iag
+    restart: unless-stopped
+    environment:
+      LANG: C
+    ports:
+      - 8443:8443
+      - 8080:8080
+    volumes:
+      # server.pem is NOT mounted -- the front-end TLS cert is embedded as B64: in iag-config.yaml
+      - ./iag-config.yaml:/var/iag/config/iag-config.yaml:ro
+      - ./certs/dpcm/httpservercert.crt:/var/iag/config/dpcm.crt:ro
+      - ./certs/iag/jwt-signing.pem:/var/iag/certs/jwt-signing.pem:ro
+    depends_on:
+      - dpc
+    networks:
+      - dpcm-net
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  dpcm-net:
+    driver: bridge
