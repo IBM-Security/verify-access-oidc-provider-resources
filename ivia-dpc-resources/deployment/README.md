@@ -32,7 +32,7 @@ This directory contains automated scripts and configuration files to deploy the 
 │     IBM Application Gateway     │ ◄──────────► ┌─────────────────────────┐
 │              (IAG)              │  OAuth/OIDC  │   IBM Security Verify   │
 └────────────────┬────────────────┘  Validation  │      (SaaS Tenant)      │
-                 │ (HTTPS: 8438 + `iv-jwt` header) └─────────────────────────┘
+                 │HTTPS: 8438 + `iv-jwt` header  └─────────────────────────┘
                  ▼
 ┌─────────────────────────────────┐
 │            IVIA DPC             │
@@ -132,24 +132,11 @@ IAG verifies incoming Bearer tokens using IBM Security Verify OAuth Introspectio
 Ensure you have administrative access to your IBM Security Verify tenant:
 `https://<tenant-name>.ice.ibmcloud.com`
 
-#### Step 4.2: Create an API Client Application
-1. In the IBM Security Verify Admin Console, go to **Applications** → **API Access** (or **Applications** → **Add Application** → **API Client**).
-2. Click **Add API Client**.
+#### Step 4.2: Create an OIDC Application
+1. In the IBM Security Verify Admin Console, go to **Applications**.
+2. Click **OpenID Connect** application.
 3. Set **Name** to `DPC-API-Client` (or your preferred name).
-4. Under **Entitlements / Grant types**, check **Client credentials**.
-5. Under **API Permissions / Scopes**, enable the necessary DPC scopes:
-   - `ibm.dpc.read_dataitems`
-   - `ibm.dpc.manage_dataitems`
-   - `ibm.dpc.read_accesstypes`
-   - `ibm.dpc.manage_accesstypes`
-   - `ibm.dpc.read_purposes`
-   - `ibm.dpc.manage_purposes`
-   - `ibm.dpc.read_rules`
-   - `ibm.dpc.manage_rules`
-   - `ibm.dpc.read_policies`
-   - `ibm.dpc.manage_policies`
-   - `ibm.dpc.read_geo`
-   - `ibm.dpc.read_consents`
+4. In the Sign-On tab, Under **Grant types**, check **Client credentials** and **Authorization Code**. Add the IAG /pkmsoidc endpoint as a Redirect URIs*.
 6. Click **Save**.
 7. Note down:
    - **Tenant URL**: `https://<tenant-name>.ice.ibmcloud.com`
@@ -226,16 +213,6 @@ curl -k https://localhost:8438/health
 - **Management APIs**: `https://localhost:8443/dpcm-mgmt/config/v1.0/privacy/...`
 - **Runtime APIs**: `https://localhost:8443/dpcm/v1.0/privacy/...`
 - **Credential Viewer (Debug)**: `https://localhost:8443/credview`
-
-### Direct DPC Endpoints (Port `8438` - Backend)
-- **Health Check**: `GET https://localhost:8438/health`
-- **Purposes**: `GET/POST /dpcm-mgmt/config/v1.0/privacy/purposes`
-- **Rules**: `GET/POST /dpcm-mgmt/config/v1.0/privacy/rules`
-- **Policies**: `GET/PUT /dpcm-mgmt/config/v1.0/privacy/policies/default`
-- **Data Usage Approval (DUA)**: `POST /dpcm/v1.0/privacy/data-usage-approval`
-- **Data Subject Presentation (DSP)**: `POST /dpcm/v1.0/privacy/data-subject-presentation`
-- **Consents**: `POST/GET /dpcm/v1.0/privacy/consents`
-
 ---
 
 ## Troubleshooting
